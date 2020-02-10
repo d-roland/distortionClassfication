@@ -28,6 +28,7 @@ history = model.fit_generator(env.single_distortion_data_generator(train_list, b
                               verbose=1,
                               validation_data=env.single_distortion_data_generator(dev_list, batch_size=batch_size, flatten=True),
                               validation_steps=len(dev_list)/batch_size)
+model.save("models\softmax."+nb_epoch+"."+batch_size+".h5")
 score = model.evaluate_generator(env.single_distortion_data_generator(test_list, batch_size=batch_size, flatten=True), steps=len(test_list)/batch_size)
 print('Test score:', score[0])
 print('Test accuracy:', score[1])
