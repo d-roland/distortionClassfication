@@ -1,6 +1,9 @@
 from data.environment import Environment
 from keras.models import Sequential
 from keras.layers import Dense, Activation
+import os
+
+# os.environ['CUDA_VISIBLE_DEVICES'] = '-1' # turn off gpu training
 
 env = Environment()
 train_list, dev_list, test_list = env.generate_train_dev_test_lists(.95, .025, .025)

@@ -45,7 +45,12 @@ class Environment:
                 label = filename_parts[1]
                 if label == "7":
                     label = "6"
-                im = imageio.imread(os.path.join(DATA_DIR, f))
+                try:
+                    im = imageio.imread(os.path.join(DATA_DIR, f))
+                except ValueError:
+                    print("skipping unloadable "+f)
+                    imageNumber+=1
+                    continue
                 if(flatten):
                     im=im.flatten()
                 images.append(im)
