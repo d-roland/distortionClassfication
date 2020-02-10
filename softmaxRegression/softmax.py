@@ -26,7 +26,7 @@ model.compile(optimizer='sgd', loss='categorical_crossentropy', metrics=['accura
 
 # checkpoint
 filepath="models\softmax.{epoch:02d}."+str(batch_size)+".{val_accuracy:.2f}.hdf5"
-checkpoint = ModelCheckpoint(filepath, monitor='accuracy', verbose=1, save_best_only=True, save_weights_only=False, mode='max', period=5)
+checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, save_weights_only=False, mode='max', period=5)
 callbacks_list = [checkpoint]
 
 history = model.fit_generator(env.single_distortion_data_generator(train_list, batch_size=batch_size, flatten=True),
