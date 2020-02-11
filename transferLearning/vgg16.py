@@ -75,11 +75,11 @@ x = layer_dict['block4_pool'].output
 
 # Stacking a new simple convolutional network on top of it
 x = Conv2D(filters=512, kernel_size=(3, 3), padding='same', activation='relu')(x)
-x = Conv2D(filters=512, kernel_size=(3, 3), padding='same', activation='relu')(x)
-x = Conv2D(filters=512, kernel_size=(3, 3), padding='same', activation='relu')(x)
+# x = Conv2D(filters=512, kernel_size=(3, 3), padding='same', activation='relu')(x)
+# x = Conv2D(filters=512, kernel_size=(3, 3), padding='same', activation='relu')(x)
 x = MaxPooling2D(pool_size=(2, 2))(x)
 x = Flatten()(x)
-x = Dense(4096, activation='relu')(x)
+# x = Dense(4096, activation='relu')(x)
 x = Dense(4096, activation='relu')(x)
 #x = Dropout(0.5)(x)
 x = Dense(7, activation='softmax')(x)
@@ -97,7 +97,7 @@ for layer in custom_model.layers[:15]:
 
 # optimizer='sgd'
 optimizer='RMSProp'
-optimizerObj=optimizers.RMSprop(decay=2e-6)
+optimizerObj=optimizers.RMSprop(decay=2e-5)
 
 custom_model.compile(loss='categorical_crossentropy',
                      optimizer=optimizerObj,
@@ -111,13 +111,13 @@ test_steps = 70
 nb_epoch = 20
 
 # checkpoint
-filepath="C:/models/vgg16-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.2f}.h5"
-filepath2="C:/models/vgg16weights-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.2f}.h5"
+filepath="C:/models/vgg16-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.2f}-{val_loss:.2f}.h5"
+filepath2="C:/models/vgg16weights-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.2f}-{val_loss:.2f}.h5"
 checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, save_weights_only=False, mode='max', period=5)
 checkpoint2 = ModelCheckpoint(filepath2, verbose=1, save_best_only=False, save_weights_only=True, period=1)
 callbacks_list = [checkpoint, checkpoint2]
 
-custom_model.save_weights("C:/models/vgg16weights-"+optimizer+"-00-"+str(batch_size)+".h5")
+# custom_model.save_weights("C:/models/vgg16weights-"+optimizer+"-00-"+str(batch_size)+".h5")
 history = custom_model.fit_generator(env.single_distortion_data_generator(train_list, batch_size=batch_size, flatten=False, batch_name="train", steps=train_steps),
                               steps_per_epoch=train_steps,#len(train_list)/batch_size,
                               epochs=nb_epoch,
