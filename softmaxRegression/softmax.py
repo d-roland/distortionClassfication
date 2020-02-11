@@ -24,10 +24,12 @@ nb_epoch = 20
 model = Sequential()
 model.add(Dense(output_dim, input_dim=input_dim, activation='softmax'))
 
-model.compile(optimizer='sgd', loss='categorical_crossentropy', metrics=['accuracy'])
+optimizer="RMSProp"
+# optimizer="sgd"
+model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
 model.summary()
 # checkpoint
-filepath="..\models\softmax-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.2f}.h5"
+filepath="..\models\softmax-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.2f}.h5"
 checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, save_weights_only=False, mode='max', period=5)
 callbacks_list = [checkpoint]
 

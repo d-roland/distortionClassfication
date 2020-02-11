@@ -34,12 +34,20 @@ class Environment:
 
     # usage:
     # for (images, labels) in env.single_distortion_data_generator(train_list):
-    def single_distortion_data_generator(self, list, batch_size=1000, flatten=False):
+    def single_distortion_data_generator(self, list, batch_size=1000, flatten=False, batch_name="", steps=0):
         images = []
         labels = []
+        imageNumbers = []
+        badImages = np.zeros(len(list)) # array to hold 0/1 values, 1 means that imageNumber is not loadable
+
+        repeatMarker = len(list) # this is used to ensure that each epoch holds the same set of images
+        if(steps > 0):
+            repeatMarker = steps*batch_size
         while True:
             imageNumber = 0
-            while imageNumber < len(list):
+            while imageNumber < repeatMarker and imageNumber < len(list):
+                if (badImages[imageNumber] == 1): # save a minute amount of time
+                    continue
                 f = list[imageNumber]
                 filename_parts = f.split(".")
                 label = filename_parts[1]
@@ -49,20 +57,24 @@ class Environment:
                     im = imageio.imread(os.path.join(DATA_DIR, f))
                 except ValueError:
                     print("skipping unloadable "+f)
+                    if(badImages[imageNumber]==0):
+                        badImages[imageNumber]=1
+                        repeatMarker+=1
                     imageNumber+=1
                     continue
                 if(flatten):
                     im=im.flatten()
                 images.append(im)
+                imageNumbers.append(imageNumber)
                 # images.append(np.reshape(im, (1, im.shape[0], im.shape[1], im.shape[2])))
                 one_hot_label = np.zeros(7)
                 one_hot_label[int(label)] = 1
                 labels.append(one_hot_label)
                 if (len(images) >= batch_size):
-                    # print(np.array(images).shape)
-                    # print(np.array(labels).shape)
+                    print("yielding "+batch_name+" "+str(np.min(imageNumbers))+" to "+str(np.max(imageNumbers)))
                     yield (np.array(images), np.array(labels))
                     images = []
                     labels = []
+                    imageNumbers =[]
                 imageNumber += 1
                 # print(imageNumber)

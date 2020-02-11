@@ -1,6 +1,6 @@
 from data.environment import Environment
 from keras import applications
-from keras.models import Sequential
+from keras.models import Model, Sequential
 from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
 from keras.callbacks import ModelCheckpoint
 import os
@@ -85,7 +85,6 @@ x = Dense(4096, activation='relu')(x)
 x = Dense(7, activation='softmax')(x)
 
 # Creating new model. Please note that this is NOT a Sequential() model.
-from keras.models import Model
 custom_model = Model(input=vgg_model.input, output=x)
 
 # Make sure that the pre-trained bottom layers are not trainable
@@ -93,27 +92,38 @@ for layer in custom_model.layers[:15]:
     layer.trainable = False
 
 # Do not forget to compile it
+# optimizer='sgd'
+optimizer='adam'
+# optimizer='RMSProp'
 custom_model.compile(loss='categorical_crossentropy',
-                     optimizer='rmsprop',
+                     optimizer=optimizer,
                      metrics=['accuracy'])
 custom_model.summary()
 
-batch_size = 256#1024 # runs out of memory at 512 batch_size
+batch_size = 256 # runs out of memory at 512 batch_size
+train_steps = 2000
+val_steps = 70
+test_steps = 70
 nb_epoch = 20
 
 # checkpoint
-filepath="..\models\vgg16-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.2f}.h5"
+filepath="C:/models/vgg16-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.2f}.h5"
+filepath2="C:/models/vgg16weights-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.2f}.h5"
 checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, save_weights_only=False, mode='max', period=5)
-callbacks_list = [checkpoint]
+checkpoint2 = ModelCheckpoint(filepath2, verbose=1, save_best_only=False, save_weights_only=True, period=1)
+callbacks_list = [checkpoint, checkpoint2]
 
-history = custom_model.fit_generator(env.single_distortion_data_generator(train_list, batch_size=batch_size, flatten=False),
-                              steps_per_epoch=len(train_list)/batch_size,
+custom_model.save_weights("C:/models/vgg16weights-"+optimizer+"-00-"+str(batch_size)+".h5")
+history = custom_model.fit_generator(env.single_distortion_data_generator(train_list, batch_size=batch_size, flatten=False, batch_name="train", steps=train_steps),
+                              steps_per_epoch=train_steps,#len(train_list)/batch_size,
                               epochs=nb_epoch,
                               verbose=1,
-                              validation_data=env.single_distortion_data_generator(dev_list, batch_size=batch_size, flatten=False),
-                              validation_steps=len(dev_list)/batch_size,
+                              validation_data=env.single_distortion_data_generator(dev_list, batch_size=batch_size, flatten=False, batch_name="dev", steps=val_steps),
+                              validation_steps=val_steps,#len(dev_list)/batch_size,
                               callbacks=callbacks_list)
-# model.save("models\softmax."+str(nb_epoch)+"."+str(batch_size)+".h5")
-score = custom_model.evaluate_generator(env.single_distortion_data_generator(test_list, batch_size=batch_size, flatten=False), steps=len(test_list)/batch_size)
+
+score = custom_model.evaluate_generator(env.single_distortion_data_generator(test_list, batch_size=batch_size, flatten=False, batch_name="test", steps=test_steps),
+                                        steps=test_steps#len(test_list)/batch_size
+                                        )
 print('Test score:', score[0])
 print('Test accuracy:', score[1])
