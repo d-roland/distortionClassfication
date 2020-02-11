@@ -1,5 +1,5 @@
 from data.environment import Environment
-from keras import applications
+from keras import applications, optimizers
 from keras.models import Model, Sequential
 from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
 from keras.callbacks import ModelCheckpoint
@@ -92,11 +92,15 @@ for layer in custom_model.layers[:15]:
     layer.trainable = False
 
 # Do not forget to compile it
+# optimizer='adam'
+# optimizerObj = optimizers.Adam(learning_rate=.5)
+
 # optimizer='sgd'
-optimizer='adam'
-# optimizer='RMSProp'
+optimizer='RMSProp'
+optimizerObj=optimizers.RMSprop(decay=1e-6)
+
 custom_model.compile(loss='categorical_crossentropy',
-                     optimizer=optimizer,
+                     optimizer=optimizerObj,
                      metrics=['accuracy'])
 custom_model.summary()
 
