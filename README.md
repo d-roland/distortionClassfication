@@ -3,6 +3,8 @@
 ## Data Generation
 The data was generated using `java/DistortImage/src/image/DistortImage.java`.
 
+![Image 1]("sampleImages/00000007.0.organism.jpg")
+
 ## Basline Model
 We trained a softmax regression model as a baseline using `softmaxRegression/softmax.py`.
 
