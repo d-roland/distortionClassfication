@@ -97,7 +97,7 @@ for layer in custom_model.layers[:15]:
 
 # optimizer='sgd'
 optimizer='RMSProp'
-optimizerObj=optimizers.RMSprop(decay=1e-6)
+optimizerObj=optimizers.RMSprop(decay=2e-6)
 
 custom_model.compile(loss='categorical_crossentropy',
                      optimizer=optimizerObj,
@@ -105,7 +105,7 @@ custom_model.compile(loss='categorical_crossentropy',
 custom_model.summary()
 
 batch_size = 256 # runs out of memory at 512 batch_size
-train_steps = 2000
+train_steps = 630
 val_steps = 70
 test_steps = 70
 nb_epoch = 20

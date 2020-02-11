@@ -47,6 +47,7 @@ class Environment:
             imageNumber = 0
             while imageNumber < repeatMarker and imageNumber < len(list):
                 if (badImages[imageNumber] == 1): # save a minute amount of time
+                    imageNumber += 1
                     continue
                 f = list[imageNumber]
                 filename_parts = f.split(".")
