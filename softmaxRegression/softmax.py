@@ -18,13 +18,14 @@ print(len(test_list))
 # https://medium.com/@the1ju/simple-logistic-regression-using-keras-249e0cc9a970
 input_dim = 224*224*3
 output_dim = nb_classes = 7
-model = Sequential()
-model.add(Dense(output_dim, input_dim=input_dim, activation='softmax'))
 batch_size = 1024
 nb_epoch = 20
 
-model.compile(optimizer='sgd', loss='categorical_crossentropy', metrics=['accuracy'])
+model = Sequential()
+model.add(Dense(output_dim, input_dim=input_dim, activation='softmax'))
 
+model.compile(optimizer='sgd', loss='categorical_crossentropy', metrics=['accuracy'])
+model.summary()
 # checkpoint
 filepath="..\models\softmax-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.2f}.h5"
 checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, save_weights_only=False, mode='max', period=5)
