@@ -111,8 +111,8 @@ test_steps = 70
 nb_epoch = 20
 
 # checkpoint
-filepath="C:/models/vgg16-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.2f}-{val_loss:.2f}.h5"
-filepath2="C:/models/vgg16weights-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.2f}-{val_loss:.2f}.h5"
+filepath="C:/models/vgg16-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
+filepath2="C:/models/vgg16weights-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
 checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, save_weights_only=False, mode='max', period=5)
 checkpoint2 = ModelCheckpoint(filepath2, verbose=1, save_best_only=False, save_weights_only=True, period=1)
 callbacks_list = [checkpoint, checkpoint2]
