@@ -39,7 +39,7 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", help="Directory to look up for images")
     parser.add_argument("-o", help="Output directory")
-    parser.add_argument("-l", help="Label number: 0. Gaussian Blur / 1. Motion Blur / 2. Gaussian Noise non monoch / 3. Gaussian Noise monoch / 4. Marble / 5. Twirl / 6. Ripple")
+    parser.add_argument("-l", help="Label number: 1. Gaussian Blur / 2. Motion Blur / 3. Gaussian Noise non monoch / 4. Gaussian Noise monoch / 5. Marble / 6. Twirl")
     parser.add_argument("-s", nargs=2, type=int, help="Output size")
     args = parser.parse_args()
 
