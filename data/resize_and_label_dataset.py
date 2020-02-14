@@ -12,26 +12,26 @@ def resize_and_label_Image(infile, output_dir, size, label):
     else:
         outfile = os.path.splitext(os.path.basename(infile))[0]
     extension = os.path.splitext(infile)[1]
-
-    img = cv2.imread(infile , cv2.IMREAD_COLOR)
-    h, w = img.shape[:2]
-    c = None if len(img.shape) < 3 else img.shape[2]
-    if h == w: 
-        img2 = cv2.resize(img, (size[0],size[1]), cv2.INTER_AREA)
-    else:
-        dif = h if h > w else w
-        interpolation = cv2.INTER_AREA if dif > (size[0]+size[1])//2 else cv2.INTER_CUBIC
-        x_pos = (dif - w)//2
-        y_pos = (dif - h)//2
-        if len(img.shape) == 2:
-            mask = np.zeros((dif, dif), dtype=img.dtype)
-            mask[y_pos:y_pos+h, x_pos:x_pos+w] = img[:h, :w]
+    if extension in ('.jpeg', '.jpg', '.bmp'):
+        img = cv2.imread(infile , cv2.IMREAD_COLOR)
+        h, w = img.shape[:2]
+        c = None if len(img.shape) < 3 else img.shape[2]
+        if h == w: 
+            img2 = cv2.resize(img, (size[0],size[1]), cv2.INTER_AREA)
         else:
-            mask = np.zeros((dif, dif, c), dtype=img.dtype)
-            mask[y_pos:y_pos+h, x_pos:x_pos+w, :] = img[:h, :w, :]
-        img2 = cv2.resize(mask, (size[0],size[1]), interpolation)
-    img2 = Image.fromarray(cv2.cvtColor(img2, cv2.COLOR_RGB2BGR))
-    img2.save(os.path.join(output_dir, outfile+extension))
+            dif = h if h > w else w
+            interpolation = cv2.INTER_AREA if dif > (size[0]+size[1])//2 else cv2.INTER_CUBIC
+            x_pos = (dif - w)//2
+            y_pos = (dif - h)//2
+            if len(img.shape) == 2:
+                mask = np.zeros((dif, dif), dtype=img.dtype)
+                mask[y_pos:y_pos+h, x_pos:x_pos+w] = img[:h, :w]
+            else:
+                mask = np.zeros((dif, dif, c), dtype=img.dtype)
+                mask[y_pos:y_pos+h, x_pos:x_pos+w, :] = img[:h, :w, :]
+            img2 = cv2.resize(mask, (size[0],size[1]), interpolation)
+        img2 = Image.fromarray(cv2.cvtColor(img2, cv2.COLOR_RGB2BGR))
+        img2.save(os.path.join(output_dir, outfile+extension))
 
 
 if __name__=="__main__":
