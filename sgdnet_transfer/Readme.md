@@ -12,4 +12,4 @@ The pdf can be found in [this link], original code on: https://github.com/ysysco
 }
 ```
 
-Adaptation introduced via file sgdnet_transfer.py
+Transfer learning introduced via file sgdnet_transfer.py (code cleaning underway)
