@@ -1,4 +1,4 @@
-from environment import Environment
+from data.environment import Environment
 from keras import applications, optimizers
 from keras.models import Model, Sequential
 from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
@@ -92,31 +92,30 @@ for layer in custom_model.layers[:15]:
     layer.trainable = True
 
 # Do not forget to compile it
-# optimizer='adam'
-# optimizerObj = optimizers.Adam(learning_rate=.5)
+optimizer='adam'
+optimizerObj = optimizers.Adam()
 
 # optimizer='sgd'
-optimizer='RMSProp'
-optimizerObj=optimizers.RMSprop(decay=2e-5)
+# optimizer='RMSProp'
+# optimizerObj=optimizers.RMSprop(decay=2e-5)
 
 custom_model.compile(loss='categorical_crossentropy',
                      optimizer=optimizerObj,
                      metrics=['accuracy'])
 custom_model.summary()
 
-sample_size = 700000
 batch_size = 128  # runs out of memory at 512 batch_size
 #train_steps =  int(sample_size/batch_size)
-train_steps = 500
+train_steps = 630*2
 #val_steps = int(train_steps*0.025)
-val_steps = 10
+val_steps = 70*2
 test_steps = val_steps
-nb_epoch = 21
+nb_epoch = 20
 
 # checkpoint
-filepath="/home/ubuntu/cs230/models_debug/vgg16-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_acc:.4f}-{val_loss:.2f}.h5"
-filepath2="/home/ubuntu/cs230/models_debug/vgg16weights-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_acc:.4f}-{val_loss:.2f}.h5"
-checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, save_weights_only=False, mode='max', period=5)
+filepath="C:/models/vgg16-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
+filepath2="C:/models/vgg16weights-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
+checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, save_weights_only=False, mode='max', period=5)
 checkpoint2 = ModelCheckpoint(filepath2, verbose=1, save_best_only=False, save_weights_only=True, period=1)
 callbacks_list = [checkpoint, checkpoint2]
 
