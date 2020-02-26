@@ -17,7 +17,7 @@ def resize_and_label_Image(infile, output_dir, size, label):
         h, w = img.shape[:2]
         c = None if len(img.shape) < 3 else img.shape[2]
         if h == w: 
-            img2 = cv2.resize(img, (size[0],size[1]), cv2.INTER_AREA)
+            img2 = cv2.resize(img, (size[0],size[1]))
         else:
             dif = h if h > w else w
             interpolation = cv2.INTER_AREA if dif > (size[0]+size[1])//2 else cv2.INTER_CUBIC
