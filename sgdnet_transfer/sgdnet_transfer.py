@@ -26,6 +26,7 @@ import h5py, yaml
 import math
 from argparse import ArgumentParser
 from scipy import stats
+import json
 
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1' # turn off gpu training
@@ -101,6 +102,11 @@ for layer in custom_model.layers[:177]:
 
 custom_model.summary()
 
+# extracting model architecture in json format 
+sgdnet_custom_json = custom_model.to_json()
+with open("sgdnet_custom_json.json", "w") as json_file:
+    json.dump(sgdnet_custom_json, json_file)
+
 # Do not forget to compile it
 optimizer='adam'
 optimizerObj = optimizers.Adam(learning_rate=.5)
@@ -114,16 +120,16 @@ custom_model.compile(loss='categorical_crossentropy',
                      metrics=['accuracy'])
 custom_model.summary()
 
-batch_size = 32 # runs out of memory at 512 batch_size
+batch_size = 256 # runs out of memory at 512 batch_size
 train_steps = 500
 val_steps = 70
 test_steps = 70
-nb_epoch = 20
+nb_epoch = 10
 
 # checkpoint
 filepath="/home/jupyter/Env/keras_ve/transfer-learning/SGDNet/sgdnet50-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
 filepath2="/home/jupyter/Env/keras_ve/transfer-learning/SGDNet/sgdnet50weights-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
-checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, save_weights_only=False, mode='max', period=5)
+checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, save_weights_only=False, mode='max', period=1)
 checkpoint2 = ModelCheckpoint(filepath2, verbose=1, save_best_only=False, save_weights_only=True, period=1)
 callbacks_list = [checkpoint, checkpoint2]
 
@@ -141,4 +147,3 @@ score = custom_model.evaluate_generator(env.single_distortion_data_generator(tes
                                         )
 print('Test score:', score[0])
 print('Test accuracy:', score[1])
-
