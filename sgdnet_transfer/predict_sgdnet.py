@@ -28,7 +28,7 @@ custom_model = load_model('sgdnet50-adam-10-128-0.7523-9.69.h5', custom_objects=
 
 
 batch_size = 128
-test_steps = ceil((len(train_list)+len(dev_list)+len(test_list))/batch_size)
+test_steps = ceil(len(test_list)/batch_size)
 y_true = []
 y_pred = []
 
