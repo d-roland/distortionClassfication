@@ -28,7 +28,7 @@ custom_model = load_model('vgg16-RMSProp-05-256-0.99-0.25.c.h5', custom_objects=
 
 
 batch_size = 128
-test_steps = ceil((len(train_list)+len(dev_list)+len(test_list))/batch_size)
+test_steps = ceil(len(test_list)/batch_size)
 y_true = []
 y_pred = []
 
