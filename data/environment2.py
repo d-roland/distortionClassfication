@@ -28,7 +28,7 @@ class Environment2:
 
     # usage:
     # for (images, labels) in env.single_distortion_data_generator(train_list):
-    def single_distortion_data_generator(self, list, batch_size=1000, flatten=False, batch_name="", steps=0):
+    def single_distortion_data_generator(self, list, batch_size=1000, flatten=False, batch_name="", steps=0, label_scheme=0):
         images = []
         labels = []
         imageNumbers = []
@@ -50,30 +50,77 @@ class Environment2:
                 distortion_param2 = filename_parts[3]
 
                 label = 0
-                if distortion_type == "blur":
-                    distortion_param1 = float(distortion_param1)
-                    if distortion_param1 >= 1 and distortion_param1 < 3:
+                num_labels = 1
+                if label_scheme == 0:
+                    num_labels = 11
+                    if distortion_type == "blur":
+                        distortion_param1 = float(distortion_param1)
+                        if distortion_param1 >= 1 and distortion_param1 < 3:
+                            label = 1
+                        if distortion_param1 >= 3 and distortion_param1 < 5:
+                            label = 2
+                        if distortion_param1 >= 5 and distortion_param1 < 7:
+                            label = 3
+                        if distortion_param1 >= 7 and distortion_param1 < 9:
+                            label = 4
+                        if distortion_param1 >= 9 and distortion_param1 <= 11:
+                            label = 5
+                    elif distortion_type == "noise":
+                        product = float(distortion_param1) * float(distortion_param2)
+                        if product >= 1 and product < 6:
+                            label = 6
+                        if product >= 6 and product < 11:
+                            label = 7
+                        if product >= 11 and product < 16:
+                            label = 8
+                        if product >= 16 and product < 21:
+                            label = 9
+                        if product >= 21:
+                            label = 10
+                if label_scheme == 1:
+                    num_labels = 3
+                    if distortion_type == "blur":
                         label = 1
-                    if distortion_param1 >= 3 and distortion_param1 < 5:
+                    if distortion_type == "noise":
                         label = 2
-                    if distortion_param1 >= 5 and distortion_param1 < 7:
-                        label = 3
-                    if distortion_param1 >= 7 and distortion_param1 < 9:
-                        label = 4
-                    if distortion_param1 >= 9 and distortion_param1 <= 11:
-                        label = 5
-                elif distortion_type == "noise":
-                    product = float(distortion_param1) * float(distortion_param2)
-                    if product >= 1 and product < 6:
-                        label = 6
-                    if product >= 6 and product < 11:
-                        label = 7
-                    if product >= 11 and product < 16:
-                        label = 8
-                    if product >= 16 and product < 21:
-                        label = 9
-                    if product >= 21:
-                        label = 10
+                if label_scheme == 2:
+                    num_labels = 15
+                    if distortion_type == "blur":
+                        distortion_param1 = float(distortion_param1)
+                        if distortion_param1 >= 1 and distortion_param1 < 3:
+                            label = 1
+                        if distortion_param1 >= 3 and distortion_param1 < 5:
+                            label = 2
+                        if distortion_param1 >= 5 and distortion_param1 < 7:
+                            label = 3
+                        if distortion_param1 >= 7 and distortion_param1 < 9:
+                            label = 4
+                        if distortion_param1 >= 9 and distortion_param1 <= 11:
+                            label = 5
+                    elif distortion_type == "noise":
+                        distortion_param1 = float(distortion_param1)
+                        distortion_param2 = float(distortion_param2)
+                        if distortion_param1 >= 1 and distortion_param1 <= 9:
+                            if distortion_param2 >= .1 and distortion_param2 <= .4:
+                                label = 6
+                            if distortion_param2 > .4 and distortion_param2 <= .7:
+                                label = 7
+                            if distortion_param2 > .7:
+                                label = 8
+                        if distortion_param1 > 9 and distortion_param1 <= 18:
+                            if distortion_param2 >= .1 and distortion_param2 <= .4:
+                                label = 9
+                            if distortion_param2 > .4 and distortion_param2 <= .7:
+                                label = 10
+                            if distortion_param2 > .7:
+                                label = 11
+                        if distortion_param1 > 18:
+                            if distortion_param2 >= .1 and distortion_param2 <= .4:
+                                label = 12
+                            if distortion_param2 > .4 and distortion_param2 <= .7:
+                                label = 13
+                            if distortion_param2 > .7:
+                                label = 14
                 try:
                     im = imageio.imread(os.path.join(DATA_DIR, f))
                 except ValueError:
@@ -88,7 +135,7 @@ class Environment2:
                 images.append(im)
                 imageNumbers.append(imageNumber)
                 # images.append(np.reshape(im, (1, im.shape[0], im.shape[1], im.shape[2])))
-                one_hot_label = np.zeros(11)
+                one_hot_label = np.zeros(num_labels)
                 one_hot_label[int(label)] = 1
                 labels.append(one_hot_label)
                 # print(f+","+str(label))
