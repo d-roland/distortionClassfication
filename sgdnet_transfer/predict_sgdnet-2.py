@@ -23,7 +23,7 @@ parser.add_argument('--label_scheme', default=1, type=int,
                     help='number and type of labels')
 args = parser.parse_args()
 
-train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0.2, 0.2, 0.6)
+train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0, 0, 1)
 #train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0.85, 0.075, 0.075)
 
 
