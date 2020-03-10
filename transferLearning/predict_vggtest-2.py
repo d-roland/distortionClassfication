@@ -23,8 +23,8 @@ parser.add_argument('--label_scheme', default=1, type=int,
                     help='number and type of labels')
 args = parser.parse_args()
 
-#train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0, 0, 1)
-train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, .85, .075, .075)
+train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0, 0, 1)
+#train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, .85, .075, .075)
 
 
 custom_model = load_model('vgg16-d2-l1-RMSProp-10-256-0.8516-0.79.f.h5', custom_objects={'BatchNorm':keras.layers.BatchNormalization}) 
