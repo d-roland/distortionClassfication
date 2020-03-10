@@ -55,9 +55,10 @@ class Environment(Sequence):
                     continue
                 f = list[imageNumber]
                 filename_parts = f.split("-")
-                distortion_type = filename_parts[1]
-                distortion_param1 = filename_parts[2]
-                distortion_param2 = filename_parts[3]
+                if len(filename_parts) > 1:
+                    distortion_type = filename_parts[1]
+                    distortion_param1 = filename_parts[2]
+                    distortion_param2 = filename_parts[3]
 
                 label = 0
                 num_labels = 1
