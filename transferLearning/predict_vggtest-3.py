@@ -92,7 +92,7 @@ for i in range(y_true.max()+1):
     tn_c[i,] = (y_true!=i)*(y_pred!=i)
     fn_c[i,] = (y_true!=i)*(y_pred==i)
 
-print("\nAnalysis of False negatives:")
+print("\nAnalysis of False negatives for class 0:")
 fn_c0 = np.argwhere(fn_c[0,]==1)
 print("Total number of images:",len(fn_c0))
 choice = random.randint(0,len(fn_c0))
