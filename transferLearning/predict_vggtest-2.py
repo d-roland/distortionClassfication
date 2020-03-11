@@ -30,7 +30,7 @@ train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_di
 custom_model = load_model('vgg16-d2-l1-RMSProp-10-256-0.8516-0.79.f.h5', custom_objects={'BatchNorm':keras.layers.BatchNormalization}) 
 
 
-batch_size = 512
+batch_size = 256
 test_steps = ceil(len(test_list)/batch_size)
 y_true = []
 y_pred = []
