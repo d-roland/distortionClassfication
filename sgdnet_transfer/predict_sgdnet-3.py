@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from IPython import get_ipython
 get_ipython().run_line_magic('matplotlib', 'inline')
 import seaborn as sns
+import random
 
 spec = importlib.util.spec_from_file_location("Environment", "/home/jupyter/Env/keras_ve/transfer-learning/data/environment-dir3.py")
 foo = importlib.util.module_from_spec(spec)
