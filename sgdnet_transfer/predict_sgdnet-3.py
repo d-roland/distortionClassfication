@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from IPython import get_ipython
+from PIL import Image
 get_ipython().run_line_magic('matplotlib', 'inline')
 import seaborn as sns
 import random
@@ -91,11 +92,11 @@ for i in range(y_true.max()+1):
     tn_c[i,] = (y_true!=i)*(y_pred!=i)
     fn_c[i,] = (y_true!=i)*(y_pred==i)
 
-print("\nAnalysis of False negatives:")
-fn_c0 = np.argwhere(fn_c[0,]==1)
-print("Total number of images:",len(fn_c0))
-choice = random.randint(0,len(fn_c0))
-sample = int(fn_c0[choice])
+print("\nAnalysis of False negatives for class 1:")
+fn_c1 = np.argwhere(fn_c[1,]==1)
+print("Total number of images:",len(fn_c1))
+choice = random.randint(0,len(fn_c1))
+sample = int(fn_c1[choice])
 print("Index of sampled image:",sample)
 print("Label of sampled image:",y_true[sample])
 print("Prediction for sampled image:",y_pred[sample])
