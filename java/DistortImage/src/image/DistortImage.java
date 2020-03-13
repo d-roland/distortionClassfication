@@ -419,56 +419,221 @@ public class DistortImage {
     	}
     }
     
+    static class ThreadWrapper2 implements Runnable {
+    	private String s, className;
+    	private int imageNumber;
+    	private Random r;
+    	
+    	public ThreadWrapper2(String s, int imageNumber, Random r, String className)
+    	{
+    		this.s = s;
+    		this.imageNumber = imageNumber;
+    		this.r = r;
+    		this.className = className;
+    	}
+    	
+    	public void run() 
+    	{
+			Image i = null;
+			try {
+				i = getImage(s);
+				if(i==null) return;
+				i = scaleImage(i, 224);
+				i = cropImage(i, 224);
+				if(i==null) return;
+			} catch(Exception e)
+			{
+				e.printStackTrace();
+				return;
+			}
+			
+			String formatted = String.format("%08d", imageNumber);
+			System.out.println(imageNumber+","+s);
+
+			// Distortions
+			// 0. Gaussian Blur "smooth blur"
+			// 2. Gaussian Noise non-monochrome
+
+			for(int blurIndex = 0; blurIndex < 1; blurIndex++)
+			{
+				BufferedImage i2 = null;
+				String distortionClassLabel = "";
+				try {
+					float radius = r.nextFloat()*10 + 1.0f;
+					i2 = (BufferedImage)gaussianBlurImage(i, radius);
+					distortionClassLabel = ""+radius;
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return;
+				}
+				
+				File outputfile = new File("C:\\out3\\"+formatted+"-blur-"+distortionClassLabel+"--"+className+".jpg");
+				try {
+					BufferedImage bi = (BufferedImage)i2;
+					BufferedImage result = new BufferedImage(
+			                    bi.getWidth(),
+			                    bi.getHeight(),
+			                    BufferedImage.TYPE_INT_RGB);
+					result.createGraphics().drawImage(bi, 0, 0, Color.WHITE, null);
+					ImageIO.write(result, "jpg", outputfile);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return;
+				}
+			}
+			
+			for(int noiseIndex = 0; noiseIndex < 1; noiseIndex++)
+			{
+				BufferedImage i2 = null;
+				int amount = 0;
+				float density = 0f;
+				try {
+					amount = r.nextInt(26)+1;
+					density = r.nextFloat() + 0.1f;
+					i2 = (BufferedImage)noiseImage(i, amount, 0, false, density);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return;
+				}
+				
+				File outputfile = new File("C:\\out3\\"+formatted+"-noise-"+amount+"-"+density+"-"+className+".jpg");
+				try {
+					BufferedImage bi = (BufferedImage)i2;
+					BufferedImage result = new BufferedImage(
+			                    bi.getWidth(),
+			                    bi.getHeight(),
+			                    BufferedImage.TYPE_INT_RGB);
+					result.createGraphics().drawImage(bi, 0, 0, Color.WHITE, null);
+					ImageIO.write(result, "jpg", outputfile);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return;
+				}
+			}
+			
+			File outputfile = new File("C:\\out3\\"+formatted+"----"+className+".jpg");
+			try {
+				BufferedImage bi = (BufferedImage)i;
+				BufferedImage result = new BufferedImage(
+		                    bi.getWidth(),
+		                    bi.getHeight(),
+		                    BufferedImage.TYPE_INT_RGB);
+				result.createGraphics().drawImage(bi, 0, 0, Color.WHITE, null);
+				ImageIO.write(result, "jpg", outputfile);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return;
+			}
+    	}
+    }
+    
 	public static void main(String[] args) throws IOException
 	{
-		// from https://towardsdatascience.com/how-to-scrape-the-imagenet-f309e02de1f4
-		// https://github.com/mf1024/ImageNet-datasets-downloader
-		File file = new File("data\\classes_in_imagenet.csv");
-		int startLine = 1870;
-		int imageNumber=193021;
-		Random r = new Random(System.currentTimeMillis());
-		  
-		BufferedReader br = new BufferedReader(new FileReader(file)); 
-
-		String st;
-		long download = 0, processing = 0, disk = 0, start = 0;
-
-		
-		int lineNumber = 0;
-		
-		ExecutorService executor = Executors.newFixedThreadPool(100);
-		
-		while ((st = br.readLine()) != null)
+		if(true)
 		{
-			if(st.startsWith("synid")) continue;
-			lineNumber++;
-			if(lineNumber < startLine) continue;
-						
-			String[] words = st.split(",");
-			String synid = words[0];
-			String className = words[1];
+			// from https://towardsdatascience.com/how-to-scrape-the-imagenet-f309e02de1f4
+			// https://github.com/mf1024/ImageNet-datasets-downloader
+			File file = new File("data\\classes_in_imagenet.csv");
+			int startLine = 3200;
+			int imageNumber=119168;
+			Random r = new Random(System.currentTimeMillis());
+			  
+			BufferedReader br = new BufferedReader(new FileReader(file)); 
+	
+			String st;
+			long download = 0, processing = 0, disk = 0, start = 0;
+	
 			
-			List<String> list = getImageURLs(synid);
+			int lineNumber = 0;
 			
-			start = System.currentTimeMillis();
-			for(String s : list)
+			ExecutorService executor = Executors.newFixedThreadPool(100);
+			
+			while ((st = br.readLine()) != null)
 			{
-				if(s.length()==0) continue;
-				System.out.println("LINE:"+lineNumber+","+s);
-				imageNumber++;
-				if(imageNumber > 1000000) break;
-				Runnable worker = new DistortImage.ThreadWrapper(s, imageNumber, r, className);
-				executor.execute(worker);
+				if(st.startsWith("synid")) continue;
+				lineNumber++;
+				if(lineNumber < startLine) continue;
+							
+				String[] words = st.split(",");
+				String synid = words[0];
+				String className = words[1];
+				
+				List<String> list = getImageURLs(synid);
+				
+				start = System.currentTimeMillis();
+				for(String s : list)
+				{
+					if(s.length()==0) continue;
+					System.out.println("LINE:"+lineNumber+","+s);
+					imageNumber++;
+					if(imageNumber > 1000000) break;
+					Runnable worker = new DistortImage.ThreadWrapper2(s, imageNumber, r, className);
+					executor.execute(worker);
+				}
+			}
+			br.close();
+			executor.shutdown();
+			while (!executor.isTerminated() ) {
+			}
+			long end = System.currentTimeMillis();
+			System.out.println((end-start)/1000);
+	//		System.out.println(download/1000);
+	//		System.out.println(processing/1000);
+	//		System.out.println(disk/1000);
+		}
+		else
+		{
+			File file = new File("data\\classes_in_imagenet.csv");
+			int startLine = 0;
+			int imageNumber=0;
+			Random r = new Random(System.currentTimeMillis());
+			  
+			BufferedReader br = new BufferedReader(new FileReader(file)); 
+	
+			String st;
+			long download = 0, processing = 0, disk = 0, start = 0;
+	
+			
+			int lineNumber = 0;
+			
+			while ((st = br.readLine()) != null)
+			{
+				if(st.startsWith("synid")) continue;
+				lineNumber++;
+				if(lineNumber < startLine) continue;
+							
+				String[] words = st.split(",");
+				String synid = words[0];
+				String className = words[1];
+				
+				List<String> list = getImageURLs(synid);
+				
+				start = System.currentTimeMillis();
+				for(String s : list)
+				{
+					Image i = null;
+					try {
+						i = getImage(s);
+						if(i==null) return;
+						i = scaleImage(i, 224);
+						i = cropImage(i, 224);
+						if(i==null) return;
+					} catch(Exception e)
+					{
+						e.printStackTrace();
+						return;
+					}
+					
+					Image i2 = (BufferedImage)noiseImage(i, 25, 5, false, 5);
+					displayImage(i);
+					displayImage(i2);
+				}
 			}
 		}
-		br.close();
-		executor.shutdown();
-		while (!executor.isTerminated() ) {
-		}
-		long end = System.currentTimeMillis();
-		System.out.println((end-start)/1000);
-//		System.out.println(download/1000);
-//		System.out.println(processing/1000);
-//		System.out.println(disk/1000);
 	}
 }
