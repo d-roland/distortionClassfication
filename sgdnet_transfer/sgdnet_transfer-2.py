@@ -20,6 +20,7 @@ from scipy import stats
 
 """ Script controlling the fine tuning of SGDNet model
     Key inputs are dataset folder and label scheme
+    Key setup is Environmentv2 module
 """
 
 # These first 6 imports can be skipped if not running from a Jupiter notebook
