@@ -144,8 +144,8 @@ test_steps = ceil(len(train_list)+len(dev_list)+len(test_list))*0.075/batch_size
 nb_epoch = 10
 
 # Set checkpoints
-filepath="/home/jupyter/Env/keras_ve/transfer-learning/VGG/vgg16-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
-filepath2="/home/jupyter/Env/keras_ve/transfer-learning/VGG/vgg16weights-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
+filepath="/home/jupyter/Env/keras_ve/transfer-learning/VGG/vgg16-d"+str(args.label_scheme)+"-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
+filepath2="/home/jupyter/Env/keras_ve/transfer-learning/VGG/vgg16weights-d"+str(args.label_scheme)+"-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
 checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, save_weights_only=False, mode='max', period=5)
 checkpoint2 = ModelCheckpoint(filepath2, verbose=1, save_best_only=False, save_weights_only=True, period=1)
 callbacks_list = [checkpoint, checkpoint2]
