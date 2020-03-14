@@ -3,15 +3,16 @@ from keras.models import load_model
 from argparse import ArgumentParser
 from math import ceil
 
-""" Evaluator of SGDNet Transfer Learning model version 2 (based on 3 labels and dataset v2)
+""" Evaluator of SGDNet Transfer Learning model (both models based on 3 labels or 8 classes)
     Outputs loss and accuracy on specified test set
+    Usage: python3 evaluate_sgdnet --data_dir <DATASET_DIR> --label_scheme <0 for 8 classes or 1 for 3 classes>
 """
 
 # The following 5 imports can be skipped if not running from a Jupiter notebook
 # Instead, simply use the following:
 # from data.environment import Environment
 import importlib.util
-spec = importlib.util.spec_from_file_location("Environment", "/home/jupyter/Env/keras_ve/transfer-learning/data/environment-dir2.py")
+spec = importlib.util.spec_from_file_location("Environment", "/home/jupyter/Env/keras_ve/transfer-learning/data/environment.py")
 foo = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(foo)
 env = foo.Environment()
@@ -28,12 +29,12 @@ args = parser.parse_args()
 # If evaluating LIVE dataset, set 100% to test_list (since dataset is small)
 # If evaluating original dataset, keep original split (eg 0.075 for test_list)
 
-train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0, 0, 1)
-#train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0.85, 0.075, 0.075)
+train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0, 0, 1, label_scheme = args.label_scheme)
+#train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0.85, 0.075, 0.075, label_scheme = args.label_scheme)
 
 # Load relevant model for evaluation
 
-#custom_model = load_model('sgdnet50-d3-l1-adam-02-128-0.6962-0.79.h5', custom_objects={'BatchNorm':keras.layers.BatchNormalization}) 
+#custom_model = load_model('sgdnet50-d1-adam-07-128-0.8719-3.15.h5', custom_objects={'BatchNorm':keras.layers.BatchNormalization}) 
 custom_model = load_model('sgdnet50-d2-RMSProp-05-256-0.8366-0.54.h5', custom_objects={'BatchNorm':keras.layers.BatchNormalization})
 
 batch_size = 256
