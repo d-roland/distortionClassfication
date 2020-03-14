@@ -8,6 +8,7 @@ from PIL import Image
 """ Resize any image dataset to specified dimensions and affect label as part of filename.
     Consistent with environment.py where images have the following naming scheme:        
     churchandcapitol.0.bmp
+    Usage : python resize_and_label_dataset.py -d <INPUT_IMAGE_DIR> -o <OUTPOUT_IMAGE_DIR> -l label -s WIDTH HEIGHT
 """
 
 parser = argparse.ArgumentParser()
