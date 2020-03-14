@@ -82,7 +82,7 @@ x = Flatten()(x)
 # x = Dense(4096, activation='relu')(x)
 x = Dense(4096, activation='relu')(x)
 #x = Dropout(0.5)(x)
-x = Dense(15, activation='softmax')(x)
+x = Dense(3, activation='softmax')(x)
 
 # Creating new model. Please note that this is NOT a Sequential() model.
 custom_model = Model(input=vgg_model.input, output=x)
@@ -109,7 +109,7 @@ train_steps = 630
 val_steps = 58
 test_steps = 58
 nb_epoch = 10
-label_scheme = 2
+label_scheme = 1
 
 # checkpoint
 filepath="C:/models/vgg16-d2-l2-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
