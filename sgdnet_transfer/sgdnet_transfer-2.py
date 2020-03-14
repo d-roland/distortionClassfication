@@ -1,13 +1,3 @@
-# These first 6 imports can be skipped if not running from a Jupiter notebook
-# Instead, simply use the following:
-# from data.environment import Environment
-from __future__ import division
-import importlib.util
-spec = importlib.util.spec_from_file_location("Environment", "/home/jupyter/Env/keras_ve/transfer-learning/data/environment-dir2.py")
-foo = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(foo)
-env = foo.Environment()
-
 # Import all relevant packages and modules for transfer learning
 import cv2,keras
 import keras.backend as K
@@ -28,11 +18,20 @@ from math import ceil
 from argparse import ArgumentParser
 from scipy import stats
 
-
 """ Script controlling the fine tuning of SGDNet model
     Key inputs are dataset folder and label scheme
+    Key setups include Environment module (input data and label generation), model fine tuning and hyperparameters
 """
 
+# The following 6 imports can be skipped if not running from a Jupiter notebook
+# Instead, simply use the following:
+# from data.environment import Environment
+from __future__ import division
+import importlib.util
+spec = importlib.util.spec_from_file_location("Environment", "/home/jupyter/Env/keras_ve/transfer-learning/data/environment-dir.py")
+foo = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(foo)
+env = foo.Environment()
 
 # We kept the command line arguments of original SGDNet, but not required to set them
 # Key 2 command lines are data_dir and label_scheme (number of classes as per environment2.py)
