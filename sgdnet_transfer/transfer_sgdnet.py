@@ -91,7 +91,7 @@ sgdnet_model.load_weights(weight_file)
 layer_dict = dict([(layer.name, layer) for layer in sgdnet_model.layers])
 
 # Getting output tensor of the last SGDNet layer that we want to include
-x = layer_dict['fc2'].output
+x = layer_dict['global_average_pooling2d_1'].output
 
 # Stacking a new simple convolutional network on top of it
 # x = Conv2D(filters=512, kernel_size=(3, 3), padding='same', activation='relu')(x)
