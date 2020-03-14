@@ -5,6 +5,10 @@ import sys
 import argparse
 from PIL import Image
 
+""" Resize any image dataset to specified dimensions and affect label as part of filename.
+    Consistent with environment2.py.
+"""
+
 parser = argparse.ArgumentParser()
 parser.add_argument("-d", help="Directory to look up for images")
 parser.add_argument("-o", help="Output directory")
