@@ -45,7 +45,7 @@ batch_size = 128
 test_steps = ceil(len(test_list)/batch_size)
 
 # Compute predictions on test set
-valid_generator = env.single_distortion_data_generator(test_list, args.data_dir, batch_size=batch_size, flatten=False, batch_name="test", steps=test_steps, label_scheme = args.label_scheme)
+valid_generator = env.single_distortion_data_generator(test_list, args.data_dir, batch_size=batch_size, flatten=False, batch_name="test", steps=test_steps)
 
 y_true = []
 y_pred = []
