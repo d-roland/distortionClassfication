@@ -37,7 +37,7 @@ if args.label_scheme == 0:
 elif args.label_scheme == 1:
     num_labels = 3
 else:
-    num_labels = 15
+    Print("Wrong label_scheme, currently 0 or 1")
 
 # Following implementation of transfer learning follows the guidelines of
 # https://riptutorial.com/keras/example/32608/transfer-learning-using-keras-and-vgg
