@@ -17,7 +17,7 @@ import seaborn as sns
 # Instead, simply use the following:
 # from data.environment import Environment
 import importlib.util
-spec = importlib.util.spec_from_file_location("Environment", "/home/jupyter/Env/keras_ve/transfer-learning/data/environment-dir2.py")
+spec = importlib.util.spec_from_file_location("Environment", "/home/jupyter/Env/keras_ve/transfer-learning/data/environment.py")
 foo = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(foo)
 env = foo.Environment()
@@ -37,10 +37,11 @@ args = parser.parse_args()
 # If analyzing performance on original dataset, keep original split (eg 0.075 for test_list)
 
 #train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0, 0, 1)
-train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, .85, .075, .075)
+train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, .85, .075, .075, label_scheme = args.label_scheme)
 
 # Load relevant model for analysis:
-custom_model = load_model('vgg16-d2-l1-RMSProp-10-256-0.8516-0.79.f.h5', custom_objects={'BatchNorm':keras.layers.BatchNormalization}) 
+custom_model = load_model('vgg16-d1-l1-RMSProp-10-256-0.8516-0.79.f.h5', custom_objects={'BatchNorm':keras.layers.BatchNormalization}) 
+# custom_model = load_model('vgg16-d0-RMSProp-05-256-0.99-0.25.c.h5', custom_objects={'BatchNorm':keras.layers.BatchNormalization}) 
 
 # Set batch size and steps number
 batch_size = 256
