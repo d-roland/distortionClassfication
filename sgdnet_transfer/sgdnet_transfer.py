@@ -1,4 +1,4 @@
-# These imports can be skipped if not running from a Jupiter notebook
+# These first 6 imports can be skipped if not running from a Jupiter notebook
 # Instead, simply use the following:
 # from data.environment import Environment
 from __future__ import division
