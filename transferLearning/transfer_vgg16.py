@@ -4,6 +4,7 @@ from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
 from keras.callbacks import ModelCheckpoint
 import os
 from argparse import ArgumentParser
+from math import ceil
 
 """ Script controlling the fine tuning of VGG model
     Key inputs are dataset folder and label scheme
@@ -11,10 +12,9 @@ from argparse import ArgumentParser
     Usage: python transfer_vgg16.py --data_dir <DATASET_DIR> --label_scheme <0 for 8 classes or 1 for 3 classes>
 """
 
-# The following 6 imports can be skipped if not running from a Jupiter notebook
+# The following 5 imports can be skipped if not running from a Jupiter notebook
 # Instead, simply use the following:
 # from data.environment import Environment
-from __future__ import division
 import importlib.util
 spec = importlib.util.spec_from_file_location("Environment", "/home/jupyter/Env/keras_ve/transfer-learning/data/environment.py")
 foo = importlib.util.module_from_spec(spec)
