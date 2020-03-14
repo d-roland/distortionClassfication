@@ -3,9 +3,9 @@ from keras.models import load_model
 from argparse import ArgumentParser
 from math import ceil
 
-""" Evaluator of SGDNet Transfer Learning model (both models based on 3 labels or 8 classes)
+""" Evaluator of SGDNet Transfer Learning model (both models based on 3 labels or 7 classes)
     Outputs loss and accuracy on specified test set
-    Usage: python3 evaluate_sgdnet --data_dir <DATASET_DIR> --label_scheme <0 for 8 classes or 1 for 3 classes>
+    Usage: python3 evaluate_sgdnet --data_dir <DATASET_DIR> --label_scheme <0 for 7 classes or 1 for 3 classes>
 """
 
 # The following 5 imports can be skipped if not running from a Jupiter notebook
