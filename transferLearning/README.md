@@ -11,8 +11,8 @@ Source : VGG16 is a convolutional neural network model proposed by K. Simonyan a
 ```
 
 ## Transfer learning
-The fine tuning of VGG base model is controlled via transfer_vgg16.py (with 8 classes or  with 3 classes)
-Usage: 
+The fine tuning of VGG base model is controlled via transfer_vgg16.py (with 8 classes or  with 3 classes)\
+Usage:\
 python transfer_vgg16.py --data_dir <DATASET_DIR> --label_scheme <0 for 8 classes or 1 for 3 classes)
 
 ## Evaluation of transfered models
