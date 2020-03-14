@@ -16,20 +16,16 @@ The pdf can be found in [this link], original code on: https://github.com/ysysco
 The SGDNet base code is in the folder sgdnet_base for reference
 
 ## Transfer learning
-The fine tuning of SGDNet base model is controlled via sgdnet_transfer.py (version 1 with 8 classes) or sgdnet_transfer-2.py (version 2 with 3 classes)
-Usage: 
-python transfer_sgdnet.py --data_dir <DATASET_DIR>
-python transfer_sgdnet-2.py --data_dir <DATASET_DIR>
+The fine tuning of SGDNet base model is controlled via sgdnet_transfer.py (with 8 classes or  with 3 classes)\
+Usage:\
+python3 transfer_sgdnet.py --data_dir <DATASET_DIR> --label_scheme <0 for 8 classes or 1 for 3 classes>
 
 ## Evaluation of transfered models
-The evaluation can be run via evaluate_sgdnet.py (for model version 1) and evaluate_sgdnet-2.py (for model version 2)
-Usage:
-python evaluate_sgdnet.py --data_dir <DATASET_DIR>
-python evaluate_sgdnet-2.py --data_dir <DATASET_DIR>
+The evaluation can be run via evaluate_sgdnet.py (both for model with 8 classes or model with 3 classes)\
+Usage:\
+python3 evaluate_sgdnet.py --data_dir <DATASET_DIR> --label_scheme <0 for 8 classes or 1 for 3 classes>
 
 ## Error analysis on transfered models
-The data necessary to perform error analysis can be obtained via error_analysis_sgdnet.py (for model version 1) and error_analysis_sgdnet-2.py (for model version 2)
-Usage:
-python error_analysis_sgdnet.py --data_dir <DATASET_DIR>
-python error_analysis_sgdnet-2.py --data_dir <DATASET_DIR>
-
+The data necessary to perform error analysis can be obtained via error_analysis_sgdnet.py (both for model with 8 classes or model with 3 classes)\
+Usage:\
+python3 error_analysis_sgdnet.py --data_dir <DATASET_DIR> --label_scheme <0 for 8 classes or 1 for 3 classes>
