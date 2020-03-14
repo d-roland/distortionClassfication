@@ -25,7 +25,7 @@ env = foo.Environment()
 parser = ArgumentParser()
 parser.add_argument('--data_dir', default="/home/jupyter/Env/keras_ve/transfer-learning/data/LIVE_224/gblur", type=str,
                     help='directory containing input images and labels')
-parser.add_argument('--label_scheme', default=2, type=int,
+parser.add_argument('--label_scheme', default=1, type=int,
                     help='number and type of labels')
 args = parser.parse_args()
 
