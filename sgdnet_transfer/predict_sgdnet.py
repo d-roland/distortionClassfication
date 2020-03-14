@@ -37,8 +37,7 @@ args = parser.parse_args()
 
 train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0.85, 0.075, 0.075)
 
-# Load relevant model for evaluation:
-
+# Load relevant model for analysis:
 custom_model = load_model('sgdnet50-RMSProp-05-256-0.8366-0.54.h5', custom_objects={'BatchNorm':keras.layers.BatchNormalization}) 
 
 # Set batch size and steps number
