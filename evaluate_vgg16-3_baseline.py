@@ -7,7 +7,7 @@ import os
 env = Environment3()
 train_list, dev_list, test_list = env.generate_train_dev_test_lists(.95, .025, .025)
 
-model = load_model('C:/models/.h5')
+model = load_model('C:/models/vgg16scratch-d3-l1-RMSProp-04-128-0.8410-0.34.k.h5')
 
 batch_size = 128  # runs out of memory at 512 batch_size
 #train_steps =  int(sample_size/batch_size)
