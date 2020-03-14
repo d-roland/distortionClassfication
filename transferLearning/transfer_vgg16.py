@@ -5,7 +5,7 @@ from keras.callbacks import ModelCheckpoint
 import os
 from argparse import ArgumentParser
 
-""" Script controlling the fine tuning of SGDNet model
+""" Script controlling the fine tuning of VGG model
     Key inputs are dataset folder and label scheme
     Key setups include Environment module (input data and label generation), model fine tuning and hyperparameters
 """
