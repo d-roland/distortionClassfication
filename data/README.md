@@ -8,8 +8,8 @@ environment-dir2.py allows the geenration of input data and labels according to 
 ## Resizing and labelling datasets
 Since our models need input images of resolution 224x224x3 with specific filenames (which include the label), it may be necessary to resize and label external datasets.\
 To that extent, 2 scripts are provided:\
-resize_and_label_dataset.py reshapes images and adapts their filename to <image_name>.<label>.<extension>\
-resize_and_label_dataset-2.py reshapes images and adapts their filename to <image_name>.blur.<blur_radius>.<extension> or <image_name>.noise.<noise_amount>.<noise_density>.<extension>\
+resize_and_label_dataset.py reshapes images and adapts their filename to <image_name>.<label>.<ext>\
+resize_and_label_dataset-2.py reshapes images and adapts their filename to <image_name>.blur.<blur_radius>.<ext> or <image_name>.noise.<noise_amount>.<noise_density>.<extension>\
 For this second script, the blur_radius, noise_amount and noise_density have to be provided via a dedicated txt file.\
 
 Usage:\
