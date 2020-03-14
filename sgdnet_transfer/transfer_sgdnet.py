@@ -21,6 +21,7 @@ from scipy import stats
 """ Script controlling the fine tuning of SGDNet model
     Key inputs are dataset folder and label scheme (8 or 3 classes)
     Key setups include model fine tuning and hyperparameters
+    Usage: python3 transfer_sgdnet.py --data_dir <DATASET_DIR> --label_scheme <0 for 8 classes or 1 for 3 classes>
 """
 
 # The following 6 imports can be skipped if not running from a Jupiter notebook
