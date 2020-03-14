@@ -9,6 +9,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+""" This script computes predictions for SGDNet transfer learning model
+    and provides all relevant data for error analysis: confusion matrix, precision, recall and F1 score
+"""
+
 # The following 7 imports can be skipped if not running from a Jupiter notebook
 # Instead, simply use the following:
 # from data.environment import Environment
