@@ -9,7 +9,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-""" This script computes predictions for SGDNet transfer learning model version 1
+""" This script computes predictions for VGG model version 1
     and provides all relevant data for error analysis: confusion matrix, precision, recall and F1 score
 """
 
