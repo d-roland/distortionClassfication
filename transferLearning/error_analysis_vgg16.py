@@ -11,6 +11,7 @@ import seaborn as sns
 
 """ This script computes predictions for VGG model version 2
     and provides all relevant data for error analysis: confusion matrix, precision, recall and F1 score
+    Usage: python3 error_analysis_vgg16.py --data_dir <DATASET_DIR> --label_scheme <0 for 8 classes or 1 for 3 classes>
 """
 
 # The following 7 imports can be skipped if not running from a Jupiter notebook
