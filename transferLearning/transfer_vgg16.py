@@ -16,7 +16,7 @@ from argparse import ArgumentParser
 # from data.environment import Environment
 from __future__ import division
 import importlib.util
-spec = importlib.util.spec_from_file_location("Environment", "/home/jupyter/Env/keras_ve/transfer-learning/data/environment-dir.py")
+spec = importlib.util.spec_from_file_location("Environment", "/home/jupyter/Env/keras_ve/transfer-learning/data/environment.py")
 foo = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(foo)
 env = foo.Environment()
