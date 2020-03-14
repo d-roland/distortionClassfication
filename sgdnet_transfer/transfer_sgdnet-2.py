@@ -19,8 +19,8 @@ from argparse import ArgumentParser
 from scipy import stats
 
 """ Script controlling the fine tuning of SGDNet model
-    Key inputs are dataset folder and label scheme
-    Key setups include Environment module (input data and label generation), model fine tuning and hyperparameters
+    Key inputs are dataset folder and label scheme (8 or 3 classes)
+    Key setups include model fine tuning and hyperparameters
 """
 
 # The following 6 imports can be skipped if not running from a Jupiter notebook
@@ -28,7 +28,7 @@ from scipy import stats
 # from data.environment import Environment
 from __future__ import division
 import importlib.util
-spec = importlib.util.spec_from_file_location("Environment", "/home/jupyter/Env/keras_ve/transfer-learning/data/environment-dir.py")
+spec = importlib.util.spec_from_file_location("Environment", "/home/jupyter/Env/keras_ve/transfer-learning/data/environment.py")
 foo = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(foo)
 env = foo.Environment()
@@ -69,15 +69,15 @@ print('CA: ' + str(args.CA))
 config.update(config[args.database])
 
 # Generate train, dev and test sets via the generate_train_dev_test_lists generator
-train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, .85, .075, .075)
+train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, .85, .075, .075, label_scheme = args.label_scheme)
 
 # Set number of labels depending on chosen label scheme, to specify Softmax size
 if args.label_scheme == 0:
-    num_labels = 11
+    num_classes = 8
 elif args.label_scheme == 1:
-    num_labels = 3
+    num_classes = 3
 else:
-    num_labels = 15
+    Print("Wrong label_scheme, currently 0 or 1 possible only")
 
 # Keep original setups of SGDNet and load corresponding model
 crop_h =  config['shape_r']  
@@ -103,7 +103,7 @@ x = layer_dict['fc2'].output
 # x = Dense(4096, activation='relu')(x)
 # x = Dense(4096, activation='relu')(x)
 # x = Dropout(0.5)(x)
-x = Dense(num_labels, activation='softmax')(x)
+x = Dense(num_classes, activation='softmax')(x)
 
 # Creating new model. Please note that this is NOT a Sequential() model.
 custom_model = Model(input=sgdnet_model.input, output=x)
@@ -139,8 +139,8 @@ test_steps = ceil(len(train_list)+len(dev_list)+len(test_list))*0.075/batch_size
 nb_epoch = 10
 
 # Set checkpoints
-filepath="/home/jupyter/Env/keras_ve/transfer-learning/SGDNet/sgdnet50-d2-l"+str(args.label_scheme)+"-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
-filepath2="/home/jupyter/Env/keras_ve/transfer-learning/SGDNet/sgdnet50weights-d2-l"+str(args.label_scheme)+"-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
+filepath="/home/jupyter/Env/keras_ve/transfer-learning/SGDNet/sgdnet50-d"+str(args.label_scheme)+"-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
+filepath2="/home/jupyter/Env/keras_ve/transfer-learning/SGDNet/sgdnet50weights-d"+str(args.label_scheme)+"-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
 checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, save_weights_only=False, mode='max', period=5)
 checkpoint2 = ModelCheckpoint(filepath2, verbose=1, save_best_only=False, save_weights_only=True, period=5)
 callbacks_list = [checkpoint, checkpoint2]
