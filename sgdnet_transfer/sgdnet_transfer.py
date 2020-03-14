@@ -29,7 +29,7 @@ from argparse import ArgumentParser
 from scipy import stats
 
 # We kept the command line arguments of original SGDNet, but not required to set them
-# Key command line is data_dir
+# Key command line parameter is dataset folder (data_dir)
 
 parser = ArgumentParser(description='PyTorch saliency guided CNNIQA')
 parser.add_argument('--config', default='config.yaml', type=str,
