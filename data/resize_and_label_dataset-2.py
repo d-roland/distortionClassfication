@@ -9,6 +9,7 @@ from PIL import Image
     Consistent with environment2.py where images have the following naming scheme:        
     00000001-blur-3.3907833—organism.jpg
     00000001-noise-8-0.12586156-organism.jpg
+    Usage: python resize_and_label_dataset-2.py -d <INPUT_IMAGE_DIR> -o <OUTPOUT_IMAGE_DIR> -l label -f <TXT_FILE> -s WIDTH HEIGHT
 """
 
 parser = argparse.ArgumentParser()
