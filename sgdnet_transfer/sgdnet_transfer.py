@@ -1,41 +1,35 @@
+# These imports can be skipped if not running from a Jupiter notebook
+# Instead, simply use the following:
+# from data.environment import Environment
 from __future__ import division
-
 import importlib.util
-spec = importlib.util.spec_from_file_location("Environment", "/home/jupyter/Env/keras_ve/transfer-learning/data/environment.py")
+spec = importlib.util.spec_from_file_location("Environment", "/home/jupyter/Env/keras_ve/transfer-learning/data/environment-dir.py")
 foo = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(foo)
+env = foo.Environment()
 
-#from data.environment import Environment
-
+# Import all relevant packages and modules for transfer learning
 import cv2,keras
+import keras.backend as K
+import tensorflow as tf
 from keras import applications, optimizers
 from keras.optimizers import RMSprop,Adam
 from keras.callbacks import EarlyStopping, ModelCheckpoint, LearningRateScheduler, TensorBoard, ReduceLROnPlateau
 from keras.layers import Input, Dense, Conv2D, MaxPooling2D, Flatten, Dropout
 from keras.models import Model, Sequential
+from modelfinal import TVdist,SGDNet
 import sys,os
 import numpy as np
-
 from utilitiestrain import preprocess_imagesandsaliencyforiqa,preprocess_label
 import time
-
-from modelfinal import TVdist,SGDNet
-import keras.backend as K
-import tensorflow as tf
 import h5py, yaml
 import math
+from math import ceil
 from argparse import ArgumentParser
 from scipy import stats
-import json
 
-
-# os.environ['CUDA_VISIBLE_DEVICES'] = '-1' # turn off gpu training
-
-env = foo.Environment()
-train_list, dev_list, test_list = env.generate_train_dev_test_lists(.95, .025, .025)
-
-
-# https://riptutorial.com/keras/example/32608/transfer-learning-using-keras-and-vgg
+# We kept the command line arguments of original SGDNet, but not required to set them
+# Key command line is data_dir
 
 parser = ArgumentParser(description='PyTorch saliency guided CNNIQA')
 parser.add_argument('--config', default='config.yaml', type=str,
@@ -54,7 +48,8 @@ parser.add_argument('--saliency', default='output', type=str,
                     help='saliency information as input or output or none (default: output)')          
 parser.add_argument('--CA', action='store_false',
                     help='use CA? (default: true')   
-
+parser.add_argument('--data_dir', default="/home/jupyter/Env/keras_ve/transfer-learning/data/LIVE_224/gblur", type=str,
+                    help='directory containing input images and labels')
 args = parser.parse_args()
 
 with open(args.config) as f:
@@ -66,8 +61,11 @@ print('saliency information: ' + args.saliency)
 print('CA: ' + str(args.CA))
 config.update(config[args.database])
 
+# Generate train, dev and test sets via the generate_train_dev_test_lists generator
+train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, .85, .075, .075)
+
+# Keep original setups of SGDNet and load corresponding model
 crop_h =  config['shape_r']  
-# print (crop_h) #384
 crop_w =  config['shape_c']   
 
 sgdnet_model = SGDNet(basemodel = args.basemodel, saliency = args.saliency, CA = args.CA,fixed =args.fixed, img_cols=crop_w, img_rows=crop_h, out2dim=args.out2dim )
@@ -94,55 +92,51 @@ x = Dense(7, activation='softmax')(x)
 
 # Creating new model. Please note that this is NOT a Sequential() model.
 custom_model = Model(input=sgdnet_model.input, output=x)
-#custom_model = Model(outputs=x, inputs=sgdnet_model.input)
 
 # Make sure that the pre-trained bottom layers are not trainable
 for layer in custom_model.layers[:177]:
     layer.trainable = False
 
+# Print model architecture
 custom_model.summary()
 
-# extracting model architecture in json format 
-sgdnet_custom_json = custom_model.to_json()
-with open("sgdnet_custom_json.json", "w") as json_file:
-    json.dump(sgdnet_custom_json, json_file)
-
 # Do not forget to compile it
-optimizer='adam'
-optimizerObj = optimizers.Adam(learning_rate=.5)
+#optimizer='adam'
+#optimizerObj = optimizers.Adam(learning_rate=.05)
 
 # optimizer='sgd'
-# optimizer='RMSProp'
-# optimizerObj=optimizers.RMSprop(decay=2e-5)
+optimizer='RMSProp'
+optimizerObj=optimizers.RMSprop(decay=2e-5)
+#optimizerObj=optimizers.RMSprop()
 
 custom_model.compile(loss='categorical_crossentropy',
                      optimizer=optimizerObj,
                      metrics=['accuracy'])
 custom_model.summary()
 
-batch_size = 256 # runs out of memory at 512 batch_size
-train_steps = 500
-val_steps = 70
-test_steps = 70
+batch_size = 128 # runs out of memory at 512 batch_size
+train_steps = ceil(len(train_list)+len(dev_list)+len(test_list))*0.85/batch_size # dataset_size * train_share / batch_size 
+val_steps = ceil(len(train_list)+len(dev_list)+len(test_list))*0.075/batch_size
+test_steps = ceil(len(train_list)+len(dev_list)+len(test_list))*0.075/batch_size
 nb_epoch = 10
 
 # checkpoint
-filepath="/home/jupyter/Env/keras_ve/transfer-learning/SGDNet/sgdnet50-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
-filepath2="/home/jupyter/Env/keras_ve/transfer-learning/SGDNet/sgdnet50weights-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
+filepath="/home/jupyter/Env/keras_ve/transfer-learning/SGDNet/sgdnet50-d1-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
+filepath2="/home/jupyter/Env/keras_ve/transfer-learning/SGDNet/sgdnet50weights-d1-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
 checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, save_weights_only=False, mode='max', period=5)
-checkpoint2 = ModelCheckpoint(filepath2, verbose=1, save_best_only=False, save_weights_only=True, period=1)
+checkpoint2 = ModelCheckpoint(filepath2, verbose=1, save_best_only=False, save_weights_only=True, period=5)
 callbacks_list = [checkpoint, checkpoint2]
 
 # custom_model.save_weights("C:/models/vgg16weights-"+optimizer+"-00-"+str(batch_size)+".h5")
-history = custom_model.fit_generator(env.single_distortion_data_generator(train_list, batch_size=batch_size, flatten=False, batch_name="train", steps=train_steps),
+history = custom_model.fit_generator(env.single_distortion_data_generator(train_list, args.data_dir, batch_size=batch_size, flatten=False, batch_name="train", steps=train_steps),
                               steps_per_epoch=train_steps,#len(train_list)/batch_size,
                               epochs=nb_epoch,
                               verbose=1,
-                              validation_data=env.single_distortion_data_generator(dev_list, batch_size=batch_size, flatten=False, batch_name="dev", steps=val_steps),
+                              validation_data=env.single_distortion_data_generator(dev_list, args.data_dir, batch_size=batch_size, flatten=False, batch_name="dev", steps=val_steps),
                               validation_steps=val_steps,#len(dev_list)/batch_size,
                               callbacks=callbacks_list)
 
-score = custom_model.evaluate_generator(env.single_distortion_data_generator(test_list, batch_size=batch_size, flatten=False, batch_name="test", steps=test_steps),
+score = custom_model.evaluate_generator(env.single_distortion_data_generator(test_list, args.data_dir, batch_size=batch_size, flatten=False, batch_name="test", steps=test_steps),
                                         steps=test_steps#len(test_list)/batch_size
                                         )
 print('Test score:', score[0])
