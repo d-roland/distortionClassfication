@@ -28,8 +28,8 @@ args = parser.parse_args()
 # If evaluating LIVE dataset, set 100% to test_list (since dataset is small)
 # If evaluating original dataset, keep original split (eg 0.075 for test_list)
 
-train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0, 0, 1)
-#train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0.85, 0.075, 0.075)
+train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0, 0, 1, label_scheme = args.label_scheme)
+#train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0.85, 0.075, 0.075, label_scheme = args.label_scheme)
 
 # Load relevant model for evaluation
 
