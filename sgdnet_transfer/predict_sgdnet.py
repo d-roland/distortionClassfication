@@ -32,8 +32,8 @@ args = parser.parse_args()
 
 
 # Generate train, dev and test sets via the generate_train_dev_test_lists generator:
-# If evaluating LIVE dataset, set 100% to test_list (since dataset is small)
-# If evaluating original dataset, keep original split (eg 0.075 for test_list)
+# If analyzing performance on LIVE dataset, set 100% to test_list (since dataset is small)
+# If analyzing performance on original dataset, keep original split (eg 0.075 for test_list)
 
 train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0.85, 0.075, 0.075)
 
