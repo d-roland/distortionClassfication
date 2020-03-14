@@ -9,7 +9,7 @@ from math import ceil
 """ Script controlling the fine tuning of VGG model
     Key inputs are dataset folder and label scheme
     Key setups include Environment module (input data and label generation), model fine tuning and hyperparameters
-    Usage: python transfer_vgg16.py --data_dir <DATASET_DIR> --label_scheme <0 for 8 classes or 1 for 3 classes>
+    Usage: python transfer_vgg16.py --data_dir <DATASET_DIR> --label_scheme <0 for 7 classes or 1 for 3 classes>
 """
 
 # The following 5 imports can be skipped if not running from a Jupiter notebook
@@ -34,7 +34,7 @@ train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_di
 
 # Set number of labels depending on chosen label scheme, to specify Softmax size
 if args.label_scheme == 0:
-    num_classes = 8
+    num_classes = 7
 elif args.label_scheme == 1:
     num_classes = 3
 else:
