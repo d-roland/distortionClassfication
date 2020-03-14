@@ -12,4 +12,14 @@ The pdf can be found in [this link], original code on: https://github.com/ysysco
 }
 ```
 
-Transfer learning introduced via file sgdnet_transfer.py (code cleaning underway)
+## Basline Model
+The SGDNet base code is in the folder sgdnet_base for reference
+
+## Transfer learning
+The fine tuning of SGDNet base model is controlled via sgdnet_transfer.py (version 1 with 8 classes) or sgdnet_transfer-2.py (version 2 with 3 classes)
+
+## Evaluation of transfered models
+The evaluation can be run via evaluate_sgdnet.py (for model version 1) and evaluate_sgdnet-2.py (for model version 2)
+
+## Error analysis on transfered models
+The data necessary to perform error analysis can be obtained via error_analysis_sgdnet.py (for model version 1) and error_analysis_sgdnet-2.py (for model version 2)
