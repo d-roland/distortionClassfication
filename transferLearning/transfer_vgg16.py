@@ -8,6 +8,7 @@ from argparse import ArgumentParser
 """ Script controlling the fine tuning of VGG model
     Key inputs are dataset folder and label scheme
     Key setups include Environment module (input data and label generation), model fine tuning and hyperparameters
+    Usage: python transfer_vgg16.py --data_dir <DATASET_DIR> --label_scheme <0 for 8 classes or 1 for 3 classes>
 """
 
 # The following 6 imports can be skipped if not running from a Jupiter notebook
@@ -33,9 +34,9 @@ train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_di
 
 # Set number of labels depending on chosen label scheme, to specify Softmax size
 if args.label_scheme == 0:
-    num_labels = 11
+    num_classes = 8
 elif args.label_scheme == 1:
-    num_labels = 3
+    num_classes = 3
 else:
     Print("Wrong label_scheme, currently 0 or 1")
 
@@ -112,7 +113,7 @@ x = Flatten()(x)
 # x = Dense(4096, activation='relu')(x)
 x = Dense(4096, activation='relu')(x)
 #x = Dropout(0.5)(x)
-x = Dense(num_labels, activation='softmax')(x)
+x = Dense(num_classes, activation='softmax')(x)
 
 # Creating new model. Please note that this is NOT a Sequential() model.
 custom_model = Model(input=vgg_model.input, output=x)
