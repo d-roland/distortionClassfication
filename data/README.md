@@ -2,7 +2,7 @@
 
 ## Generating input data and labels
 Two label schemes are currently used by our models, via 2 modules:\
-environment-dir.py allows the generation of input data and labels according to 2 label schemes: 3 or 8 classes (for 3 or 8 distortion types).\
+environment-dir.py allows the generation of input data and labels according to 2 label schemes: 3 or 7 classes (for 3 or 7 distortion types).\
 
 ## Resizing and labelling datasets
 Since our models need input images of resolution 224x224x3 with specific filenames (which include the label), it may be necessary to resize and label external datasets.\
