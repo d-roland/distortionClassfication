@@ -6,13 +6,14 @@ import argparse
 from PIL import Image
 
 """ Resize any image dataset to specified dimensions and affect label as part of filename.
-    Consistent with environment2.py.
+    Consistent with environment.py where images have the following naming scheme:        
+    churchandcapitol.0.bmp
 """
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-d", help="Directory to look up for images")
 parser.add_argument("-o", help="Output directory")
-parser.add_argument("-l", help="Label number: 0. Original / 1. Blur / 2. Noise")
+parser.add_argument("-l", help="Label number: 0. Original / 1. Gaussian blur / 2. Motion blur / 3. Non-monochrome Gaussian noise / 4. Monochrome Gaussian noise / 5. Marble / 6. Twirl")
 parser.add_argument("-s", nargs=2, type=int, help="Output size")
 args = parser.parse_args()
 
