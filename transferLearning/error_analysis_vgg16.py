@@ -36,7 +36,7 @@ args = parser.parse_args()
 # If analyzing performance on LIVE dataset, set 100% to test_list (since dataset is small)
 # If analyzing performance on original dataset, keep original split (eg 0.075 for test_list)
 
-#train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0, 0, 1)
+#train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0, 0, 1, label_scheme = args.label_scheme)
 train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, .85, .075, .075, label_scheme = args.label_scheme)
 
 # Load relevant model for analysis:
