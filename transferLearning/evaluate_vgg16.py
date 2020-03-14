@@ -5,6 +5,7 @@ from math import ceil
 
 """ Evaluator of VGG transfered model (based on 8 or 3 classes)
     Outputs loss and accuracy on specified test set
+    Usage: python3 evaluate_vgg16.py --data_dir <DATASET_DIR> --label_scheme <0 for 8 classes or 1 for 3 classes>
 """
 
 # The following 5 imports can be skipped if not running from a Jupiter notebook
