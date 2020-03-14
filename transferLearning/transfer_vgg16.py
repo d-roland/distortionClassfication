@@ -1,15 +1,35 @@
-from data.environment import Environment
 from keras import applications, optimizers
 from keras.models import Model, Sequential
 from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
 from keras.callbacks import ModelCheckpoint
 import os
+from argparse import ArgumentParser
 
-# os.environ['CUDA_VISIBLE_DEVICES'] = '-1' # turn off gpu training
+""" Script controlling the fine tuning of SGDNet model
+    Key inputs are dataset folder and label scheme
+    Key setups include Environment module (input data and label generation), model fine tuning and hyperparameters
+"""
 
-env = Environment()
-train_list, dev_list, test_list = env.generate_train_dev_test_lists(.95, .025, .025)
+# The following 6 imports can be skipped if not running from a Jupiter notebook
+# Instead, simply use the following:
+# from data.environment import Environment
+from __future__ import division
+import importlib.util
+spec = importlib.util.spec_from_file_location("Environment", "/home/jupyter/Env/keras_ve/transfer-learning/data/environment-dir.py")
+foo = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(foo)
+env = foo.Environment()
 
+# Key command line parameter is dataset folder
+parser = ArgumentParser()
+parser.add_argument('--data_dir', default="/home/jupyter/Env/keras_ve/transfer-learning/data/LIVE_224/gblur", type=str,
+                    help='directory containing input images and labels')
+args = parser.parse_args()
+
+# Generate train, dev and test sets via the generate_train_dev_test_lists generator
+train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, .95, .025, .025)
+
+# Following implementation of transfer learning follows the guidelines of
 # https://riptutorial.com/keras/example/32608/transfer-learning-using-keras-and-vgg
 vgg_model = applications.VGG16(weights='imagenet', include_top=True)
 vgg_model.summary()
@@ -82,7 +102,7 @@ x = Flatten()(x)
 # x = Dense(4096, activation='relu')(x)
 x = Dense(4096, activation='relu')(x)
 #x = Dropout(0.5)(x)
-x = Dense(7, activation='softmax')(x)
+x = Dense(11, activation='softmax')(x)
 
 # Creating new model. Please note that this is NOT a Sequential() model.
 custom_model = Model(input=vgg_model.input, output=x)
@@ -91,7 +111,8 @@ custom_model = Model(input=vgg_model.input, output=x)
 for layer in custom_model.layers[:15]:
     layer.trainable = False
 
-# Do not forget to compile it
+# Select an optimizer and other hyperparameters:
+
 # optimizer='adam'
 # optimizerObj = optimizers.Adam(learning_rate=.5)
 
@@ -99,35 +120,38 @@ for layer in custom_model.layers[:15]:
 optimizer='RMSProp'
 optimizerObj=optimizers.RMSprop(decay=2e-5)
 
+# Do not forget to compile it
 custom_model.compile(loss='categorical_crossentropy',
                      optimizer=optimizerObj,
                      metrics=['accuracy'])
 custom_model.summary()
 
-batch_size = 256 # runs out of memory at 512 batch_size
-train_steps = 630
-val_steps = 70
-test_steps = 70
-nb_epoch = 20
+# Set batch size, steps and epoch numbers
+batch_size = 128 # runs out of memory at 512 batch_size
+train_steps = 1500 # dataset_size * train_share / batch_size ==> 200000 * 0.95 / 128 = 1500 
+val_steps = 100
+test_steps = 100
+nb_epoch = 10
 
-# checkpoint
-filepath="C:/models/vgg16-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
-filepath2="C:/models/vgg16weights-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
+# Set checkpoints
+filepath="/home/jupyter/Env/keras_ve/transfer-learning/VGG/vgg16-d1-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
+filepath2="/home/jupyter/Env/keras_ve/transfer-learning/VGG/vgg16weights-d1-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
 checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, save_weights_only=False, mode='max', period=5)
-checkpoint2 = ModelCheckpoint(filepath2, verbose=1, save_best_only=False, save_weights_only=True, period=1)
+checkpoint2 = ModelCheckpoint(filepath2, verbose=1, save_best_only=False, save_weights_only=True, period=5)
 callbacks_list = [checkpoint, checkpoint2]
 
 # custom_model.save_weights("C:/models/vgg16weights-"+optimizer+"-00-"+str(batch_size)+".h5")
-history = custom_model.fit_generator(env.single_distortion_data_generator(train_list, batch_size=batch_size, flatten=False, batch_name="train", steps=train_steps),
+history = custom_model.fit_generator(env.single_distortion_data_generator(train_list, args.data_dir, batch_size=batch_size, flatten=False, batch_name="train", steps=train_steps),
                               steps_per_epoch=train_steps,#len(train_list)/batch_size,
                               epochs=nb_epoch,
                               verbose=1,
-                              validation_data=env.single_distortion_data_generator(dev_list, batch_size=batch_size, flatten=False, batch_name="dev", steps=val_steps),
+                              validation_data=env.single_distortion_data_generator(dev_list, args.data_dir, batch_size=batch_size, flatten=False, batch_name="dev", steps=val_steps),
                               validation_steps=val_steps,#len(dev_list)/batch_size,
                               callbacks=callbacks_list)
 
-score = custom_model.evaluate_generator(env.single_distortion_data_generator(test_list, batch_size=batch_size, flatten=False, batch_name="test", steps=test_steps),
+score = custom_model.evaluate_generator(env.single_distortion_data_generator(test_list, args.data_dir, batch_size=batch_size, flatten=False, batch_name="test", steps=test_steps),
                                         steps=test_steps#len(test_list)/batch_size
                                         )
+# Ultimately, print score and accuracy
 print('Test score:', score[0])
 print('Test accuracy:', score[1])
