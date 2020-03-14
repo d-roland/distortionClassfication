@@ -3,7 +3,7 @@ from keras.models import load_model
 from argparse import ArgumentParser
 from math import ceil
 
-""" Evaluator of SGDNet Transfer Learning model
+""" Evaluator of SGDNet Transfer Learning model (based on 8 labels and dataset v1)
     Outputs loss and accuracy on specified test set
 """
 
