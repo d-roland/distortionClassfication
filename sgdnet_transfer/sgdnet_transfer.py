@@ -19,7 +19,8 @@ from argparse import ArgumentParser
 from scipy import stats
 
 """ Script controlling the fine tuning of SGDNet model
-    Key inputs is dataset folder, and key setup is Environment module
+    Key inputs is dataset folder
+    Key setup includes Environment module (input data & labels generation) and hyperparameters
 """
 
 # These first 6 imports can be skipped if not running from a Jupiter notebook
