@@ -3,7 +3,7 @@
 # from data.environment import Environment
 from __future__ import division
 import importlib.util
-spec = importlib.util.spec_from_file_location("Environment", "/home/jupyter/Env/keras_ve/transfer-learning/data/environment-dir2.py")
+spec = importlib.util.spec_from_file_location("Environment", "/home/jupyter/Env/keras_ve/transfer-learning/data/environment2.py")
 foo = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(foo)
 env = foo.Environment()
@@ -29,7 +29,7 @@ from argparse import ArgumentParser
 from scipy import stats
 
 # We kept the command line arguments of original SGDNet, but not required to set them
-# Key 2 command lines are data_dir and label_scheme (number of classes as per environment.py)
+# Key 2 command lines are data_dir and label_scheme (number of classes as per environment2.py)
 
 parser = ArgumentParser(description='PyTorch saliency guided CNNIQA')
 parser.add_argument('--config', default='config.yaml', type=str,
