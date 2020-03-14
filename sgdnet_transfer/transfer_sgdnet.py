@@ -36,7 +36,7 @@ env = foo.Environment()
 # Key 2 command lines are data_dir and label_scheme (number of classes as per environment2.py)
 
 parser = ArgumentParser(description='PyTorch saliency guided CNNIQA')
-parser.add_argument('--config', default='config.yaml', type=str,
+parser.add_argument('--config', default='./sgdnet_base/config.yaml', type=str,
                     help='config file path (default: config.yaml)')
 parser.add_argument('--database', default='LIVEc', type=str,
                     help='database name (default: LIVEc)')
