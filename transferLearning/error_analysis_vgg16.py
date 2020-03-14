@@ -32,7 +32,7 @@ args = parser.parse_args()
 
 # Generate train, dev and test sets via the generate_train_dev_test_lists generator:
 # If analyzing performance on LIVE dataset, set 100% to test_list (since dataset is small)
-# If analyzing performance on original dataset, keep original split (eg 0.075 for test_list)
+# If analyzing performance on original dataset, keep original split (eg 0.025 for test_list)
 
 #train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0, 0, 1)
 train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, .95, .025, .025)
@@ -41,7 +41,7 @@ train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_di
 custom_model = load_model('vgg16-RMSProp-05-256-0.99-0.25.c.h5', custom_objects={'BatchNorm':keras.layers.BatchNormalization}) 
 
 # Set batch size and steps number
-batch_size = 128
+batch_size = 256
 test_steps = ceil(len(test_list)/batch_size)
 
 # Compute predictions on test set
