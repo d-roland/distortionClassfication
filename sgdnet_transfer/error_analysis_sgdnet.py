@@ -11,13 +11,14 @@ import seaborn as sns
 
 """ This script computes predictions for SGDNet transfer learning model version 2
     and provides all relevant data for error analysis: confusion matrix, precision, recall and F1 score
+    Usage: python error_analysis_sgdnet.py --data_dir <DATASET_DIR> --label_scheme <0 for 8 classes or 1 for 3 classes>
 """
 
 # The following 7 imports can be skipped if not running from a Jupiter notebook
 # Instead, simply use the following:
 # from data.environment import Environment
 import importlib.util
-spec = importlib.util.spec_from_file_location("Environment", "/home/jupyter/Env/keras_ve/transfer-learning/data/environment-dir2.py")
+spec = importlib.util.spec_from_file_location("Environment", "/home/jupyter/Env/keras_ve/transfer-learning/data/environment.py")
 foo = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(foo)
 env = foo.Environment()
@@ -36,11 +37,12 @@ args = parser.parse_args()
 # If analyzing performance on LIVE dataset, set 100% to test_list (since dataset is small)
 # If analyzing performance on original dataset, keep original split (eg 0.075 for test_list)
 
-train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0, 0, 1)
-#train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0.85, 0.075, 0.075)
+train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0, 0, 1, label_scheme = args.label_scheme)
+#train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, 0.85, 0.075, 0.075, label_scheme = args.label_scheme)
 
 # Load relevant model for analysis:
 custom_model = load_model('sgdnet50-d2-RMSProp-05-256-0.8366-0.54.h5', custom_objects={'BatchNorm':keras.layers.BatchNormalization}) 
+#custom_model = load_model('sgdnet50-RMSProp-05-256-0.8366-0.54.h5', custom_objects={'BatchNorm':keras.layers.BatchNormalization})
 
 # Set batch size and steps number
 batch_size = 256
