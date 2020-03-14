@@ -1,3 +1,13 @@
+# These first 6 imports can be skipped if not running from a Jupiter notebook
+# Instead, simply use the following:
+# from data.environment import Environment
+from __future__ import division
+import importlib.util
+spec = importlib.util.spec_from_file_location("Environment", "/home/jupyter/Env/keras_ve/transfer-learning/data/environment-dir.py")
+foo = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(foo)
+env = foo.Environment()
+
 # Import all relevant packages and modules for transfer learning
 import cv2,keras
 import keras.backend as K
@@ -17,21 +27,6 @@ import math
 from math import ceil
 from argparse import ArgumentParser
 from scipy import stats
-
-""" Script controlling the fine tuning of SGDNet model
-    Key inputs is dataset folder
-    Key setup includes Environment module (input data & labels generation) and hyperparameters
-"""
-
-# These first 6 imports can be skipped if not running from a Jupiter notebook
-# Instead, simply use the following:
-# from data.environment import Environment
-from __future__ import division
-import importlib.util
-spec = importlib.util.spec_from_file_location("Environment", "/home/jupyter/Env/keras_ve/transfer-learning/data/environment-dir.py")
-foo = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(foo)
-env = foo.Environment()
 
 # We kept the command line arguments of original SGDNet, but not required to set them
 # Key command line is data_dir
@@ -105,7 +100,8 @@ for layer in custom_model.layers[:177]:
 # Print model architecture
 custom_model.summary()
 
-# Do not forget to compile it
+# Select an optimizer and other hyperparameters
+
 #optimizer='adam'
 #optimizerObj = optimizers.Adam(learning_rate=.05)
 
@@ -114,18 +110,20 @@ optimizer='RMSProp'
 optimizerObj=optimizers.RMSprop(decay=2e-5)
 #optimizerObj=optimizers.RMSprop()
 
+# Do not forget to compile the new model
 custom_model.compile(loss='categorical_crossentropy',
                      optimizer=optimizerObj,
                      metrics=['accuracy'])
 custom_model.summary()
 
+# Set batch size, steps and epoch numbers
 batch_size = 128 # runs out of memory at 512 batch_size
 train_steps = ceil(len(train_list)+len(dev_list)+len(test_list))*0.85/batch_size # dataset_size * train_share / batch_size 
 val_steps = ceil(len(train_list)+len(dev_list)+len(test_list))*0.075/batch_size
 test_steps = ceil(len(train_list)+len(dev_list)+len(test_list))*0.075/batch_size
 nb_epoch = 10
 
-# checkpoint
+# Set checkpoints
 filepath="/home/jupyter/Env/keras_ve/transfer-learning/SGDNet/sgdnet50-d1-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
 filepath2="/home/jupyter/Env/keras_ve/transfer-learning/SGDNet/sgdnet50weights-d1-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
 checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, save_weights_only=False, mode='max', period=5)
@@ -144,5 +142,6 @@ history = custom_model.fit_generator(env.single_distortion_data_generator(train_
 score = custom_model.evaluate_generator(env.single_distortion_data_generator(test_list, args.data_dir, batch_size=batch_size, flatten=False, batch_name="test", steps=test_steps),
                                         steps=test_steps#len(test_list)/batch_size
                                         )
+# Ultimately, print score and accuracy
 print('Test score:', score[0])
 print('Test accuracy:', score[1])
