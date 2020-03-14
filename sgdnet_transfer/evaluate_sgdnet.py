@@ -3,6 +3,10 @@ from keras.models import load_model
 from argparse import ArgumentParser
 from math import ceil
 
+""" Evaluator of SGDNet Transfer Learning model
+    Outputs loss and accuracy on specified test set
+"""
+
 # The following 5 imports can be skipped if not running from a Jupiter notebook
 # Instead, simply use the following:
 # from data.environment import Environment
