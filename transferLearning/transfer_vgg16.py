@@ -30,7 +30,7 @@ parser.add_argument('--label_scheme', default=1, type=int,
 args = parser.parse_args()
 
 # Generate train, dev and test sets via the generate_train_dev_test_lists generator
-train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, .85, .075, .075)
+train_list, dev_list, test_list = env.generate_train_dev_test_lists(args.data_dir, .85, .075, .075, label_scheme = args.label_scheme)
 
 # Set number of labels depending on chosen label scheme, to specify Softmax size
 if args.label_scheme == 0:
