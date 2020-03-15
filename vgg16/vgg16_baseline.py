@@ -1,4 +1,4 @@
-from data.environment3 import Environment3
+from data.environment import Environment
 from keras import applications, optimizers
 from keras.models import Model, Sequential
 from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
@@ -7,8 +7,14 @@ import os
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1' # turn off gpu training
 
-env = Environment3()
-train_list, dev_list, test_list = env.generate_train_dev_test_lists(.85, .075, .075)
+""" Script controlling the training of the VGG16 scratch
+    ensure the label_scheme and data_dir are set correctly below
+"""
+label_scheme = 1
+data_dir = 'C:/out2'
+
+env = Environment()
+train_list, dev_list, test_list = env.generate_train_dev_test_lists(data_dir, .95, .025, .025, label_scheme=label_scheme)
 
 # https://riptutorial.com/keras/example/32608/transfer-learning-using-keras-and-vgg
 vgg_model = applications.VGG16(weights=None, include_top=True)
@@ -82,7 +88,13 @@ x = Flatten()(x)
 # x = Dense(4096, activation='relu')(x)
 x = Dense(4096, activation='relu')(x)
 #x = Dropout(0.5)(x)
-x = Dense(3, activation='softmax')(x)
+if label_scheme == 0:
+    num_classes = 7
+elif label_scheme == 1:
+    num_classes = 3
+else:
+    print("Wrong label_scheme, currently 0 or 1")
+x = Dense(num_classes, activation='softmax')(x)
 
 # Creating new model. Please note that this is NOT a Sequential() model.
 custom_model = Model(input=vgg_model.input, output=x)
@@ -92,12 +104,12 @@ for layer in custom_model.layers[:15]:
     layer.trainable = True
 
 # Do not forget to compile it
-# optimizer='adam'
-# optimizerObj = optimizers.Adam()
+optimizer='adam'
+optimizerObj = optimizers.Adam()
 
 # optimizer='sgd'
-optimizer='RMSProp'
-optimizerObj=optimizers.RMSprop(decay=2e-5)
+# optimizer='RMSProp'
+# optimizerObj=optimizers.RMSprop(decay=2e-5)
 
 custom_model.compile(loss='categorical_crossentropy',
                      optimizer=optimizerObj,
@@ -110,26 +122,25 @@ train_steps = 630*2
 #val_steps = int(train_steps*0.025)
 val_steps = 58*2
 test_steps = val_steps
-nb_epoch = 10
-label_scheme = 1
+nb_epoch = 20
 
 # checkpoint
-filepath="C:/models/vgg16scratch-d3-l1-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
-filepath2="C:/models/vgg16scratch-d3-l1-weights-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
-checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, save_weights_only=False, mode='max', period=1)
+filepath="C:/models/vgg16-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
+filepath2="C:/models/vgg16weights-"+optimizer+"-{epoch:02d}-"+str(batch_size)+"-{val_accuracy:.4f}-{val_loss:.2f}.h5"
+checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, save_weights_only=False, mode='max', period=5)
 checkpoint2 = ModelCheckpoint(filepath2, verbose=1, save_best_only=False, save_weights_only=True, period=1)
-callbacks_list = [checkpoint]
+callbacks_list = [checkpoint, checkpoint2]
 
 # custom_model.save_weights("C:/models/vgg16weights-"+optimizer+"-00-"+str(batch_size)+".h5")
-history = custom_model.fit_generator(env.single_distortion_data_generator(train_list, batch_size=batch_size, flatten=False, batch_name="train", steps=train_steps, label_scheme=label_scheme),
+history = custom_model.fit_generator(env.single_distortion_data_generator(train_list, data_dir, batch_size=batch_size, flatten=False, batch_name="train", steps=train_steps, label_scheme=label_scheme),
                               steps_per_epoch=train_steps,#len(train_list)/batch_size,
                               epochs=nb_epoch,
                               verbose=1,
-                              validation_data=env.single_distortion_data_generator(dev_list, batch_size=batch_size, flatten=False, batch_name="dev", steps=val_steps, label_scheme=label_scheme),
+                              validation_data=env.single_distortion_data_generator(dev_list, data_dir, batch_size=batch_size, flatten=False, batch_name="dev", steps=val_steps, label_scheme=label_scheme),
                               validation_steps=val_steps,#len(dev_list)/batch_size,
                               callbacks=callbacks_list)
 
-score = custom_model.evaluate_generator(env.single_distortion_data_generator(test_list, batch_size=batch_size, flatten=False, batch_name="test", steps=test_steps, label_scheme=label_scheme),
+score = custom_model.evaluate_generator(env.single_distortion_data_generator(test_list, data_dir, batch_size=batch_size, flatten=False, batch_name="test", steps=test_steps, label_scheme=label_scheme),
                                         steps=test_steps#len(test_list)/batch_size
                                         )
 print('Test score:', score[0])

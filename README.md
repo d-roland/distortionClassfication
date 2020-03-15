@@ -34,9 +34,13 @@ Twirl:
 ## Basline Model
 We trained a softmax regression model as a baseline using `softmaxRegression/softmax.py`.
 
+## VGG16 Scratch Model
+We trained VGG16 model from scratch using `vgg16/vgg16_baseline.py`.\
+Scripts for evaluation of the VGG16 models are in 'vgg16'.
+
 ## Generic Transfer Learning Model
-We fine tuned VGG16 model using `transferLearning/transfer_vgg16.py`.\
-Scripts for evaluation and error analysis of the VGG16 models are in 'transferLearning'.
+We fine tuned VGG16 model using `transferLearningVGG16/transfer_vgg16.py`.\
+Scripts for evaluation and error analysis of the VGG16 models are in 'transferLearningVGG16'.
 
 ## IQA Transfer Learning Model
 We fine tuned SGDNet model using `sgdnet_transfer/transfer_sgdnet.py`.
