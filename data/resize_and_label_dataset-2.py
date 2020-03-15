@@ -5,6 +5,13 @@ import sys
 import argparse
 from PIL import Image
 
+""" Resize any image dataset to specified dimensions and affect label as part of filename.
+    Consistent with environment2.py where images have the following naming scheme:        
+    00000001-blur-3.3907833—organism.jpg
+    00000001-noise-8-0.12586156-organism.jpg
+    Usage: python resize_and_label_dataset-2.py -d <INPUT_IMAGE_DIR> -o <OUTPOUT_IMAGE_DIR> -l label -f <TXT_FILE> -s WIDTH HEIGHT
+"""
+
 parser = argparse.ArgumentParser()
 parser.add_argument("-d", help="Directory to look up for images")
 parser.add_argument("-o", help="Output directory")
@@ -67,10 +74,3 @@ for file in os.listdir(input_dir):
             img2 = cv2.resize(mask, (output_size[0],output_size[1]), interpolation)
         img2 = Image.fromarray(cv2.cvtColor(img2, cv2.COLOR_RGB2BGR))
         img2.save(os.path.join(output_dir, outfile+extension))
-        
-        
-    # 00000001-blur-3.3907833—organism.jpg
-    # 3.3907833 is the blur radius.  This is a float between 1.0 and 11.0
-    # 00000001 / blur / 3.3907833 / organism.jpg
-    
-    # 00000001-noise-8-0.12586156-organism.jpg

@@ -35,10 +35,12 @@ Twirl:
 We trained a softmax regression model as a baseline using `softmaxRegression/softmax.py`.
 
 ## Generic Transfer Learning Model
-We fine tuned VGG16 model using `transferLearning/vgg16.py`.
+We fine tuned VGG16 model using `transferLearning/transfer_vgg16.py`.\
+Scripts for evaluation and error analysis of the VGG16 models are in 'transferLearning'.
 
 ## IQA Transfer Learning Model
-We fine tuned SGDNet model using `sgdnet_transfer/sgdnet_transfer.py`.
+We fine tuned SGDNet model using `sgdnet_transfer/transfer_sgdnet.py`.
+Scripts for evaluation and error analysis of the SGDNet transferred models are in 'sgdnet_transfer'.
 
 ## Saved Models
 Saved models are in `models/`--only the ones under the GitHub 100MB file size limit.
