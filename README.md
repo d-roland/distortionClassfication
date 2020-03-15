@@ -45,3 +45,7 @@ Scripts for evaluation and error analysis of the VGG16 models are in 'transferLe
 ## IQA Transfer Learning Model
 We fine tuned SGDNet model using `sgdnet_transfer/transfer_sgdnet.py`.
 Scripts for evaluation and error analysis of the SGDNet transferred models are in 'sgdnet_transfer'.
+
+## SSIM
+We calculated structural similarity index metric using `ssim.py` .\
+Scripts for evaluation of VGG16 and SGDNet on test sets using ssim are in 'ssim_calc.ipynb'
