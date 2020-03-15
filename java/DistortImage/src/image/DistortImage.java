@@ -219,7 +219,6 @@ public class DistortImage {
 		return i2;
     }
     
-    // TODO: add random intensity of each distortion
     public static BufferedImage distortImage(Image i, int distortionClass) throws IOException
     {
     	BufferedImage i2 = null;
@@ -277,11 +276,6 @@ public class DistortImage {
     	final AffineTransformOp ato = new AffineTransformOp(at, AffineTransformOp.TYPE_BICUBIC);
     	scaledImage = ato.filter(bi, scaledImage);
 
-//    	final Scale scaler = new Scale(2);
-//    	BufferedImage scaledImage= scaler.apply(image);
-//    	displayImage(bi);
-//    	displayImage(scaledImage);
-//    	System.out.println(scaledImage.getHeight()+","+scaledImage.getWidth());
     	return scaledImage;
     }
     
@@ -319,7 +313,6 @@ public class DistortImage {
     	
     	public void run() 
     	{
-//    		long startDownload = System.currentTimeMillis();
 			Image i = null;
 			try {
 				i = getImage(s);
@@ -332,9 +325,6 @@ public class DistortImage {
 				e.printStackTrace();
 				return;
 			}
-//			long endDownload = System.currentTimeMillis();
-			//						displayImage(i);
-//			download += endDownload - startDownload;
 			
 			String formatted = String.format("%08d", imageNumber);
 			System.out.println(imageNumber+","+s);
@@ -350,7 +340,6 @@ public class DistortImage {
 
 			for(int distortionClass = 0; distortionClass < 8; distortionClass++)
 			{
-//				long startProcessing = System.currentTimeMillis();
 				BufferedImage i2 = null;
 				String distortionClassLabel = "";
 				if(distortionClass == 7)
@@ -362,7 +351,6 @@ public class DistortImage {
 					try {
 						i2 = distortTwiceImage(i, first, second);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 						return;
 					}
@@ -373,17 +361,11 @@ public class DistortImage {
 					try {
 						i2 = distortImage(i, distortionClass);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 						return;
 					}
 					distortionClassLabel = ""+(distortionClass+1);
 				}
-				//				displayImage(i2);
-//				long endProcessing = System.currentTimeMillis();
-//				processing += endProcessing - startProcessing;
-				
-//				long startDisk = System.currentTimeMillis();
 				
 				File outputfile = new File("C:\\out\\"+formatted+"."+distortionClassLabel+"."+className+".jpg");
 				try {
@@ -395,12 +377,9 @@ public class DistortImage {
 					result.createGraphics().drawImage(bi, 0, 0, Color.WHITE, null);
 					ImageIO.write(result, "jpg", outputfile);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 					return;
 				}
-//				long endDisk = System.currentTimeMillis();
-//				disk += endDisk - startDisk;
 			}
 			File outputfile = new File("C:\\out\\"+formatted+".0."+className+".jpg");
 			try {
@@ -412,7 +391,6 @@ public class DistortImage {
 				result.createGraphics().drawImage(bi, 0, 0, Color.WHITE, null);
 				ImageIO.write(result, "jpg", outputfile);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return;
 			}
@@ -436,6 +414,7 @@ public class DistortImage {
     	{
 			Image i = null;
 			try {
+				// download image and scale down to 224x224
 				i = getImage(s);
 				if(i==null) return;
 				i = scaleImage(i, 224);
@@ -451,10 +430,12 @@ public class DistortImage {
 			System.out.println(imageNumber+","+s);
 
 			// Distortions
-			// 0. Gaussian Blur "smooth blur"
+			// 1. Gaussian Blur "smooth blur"
 			// 2. Gaussian Noise non-monochrome
 
-			for(int blurIndex = 0; blurIndex < 1; blurIndex++)
+			// generate blur images 
+			int totalBlurImages = 1;
+			for(int blurIndex = 0; blurIndex < totalBlurImages; blurIndex++)
 			{
 				BufferedImage i2 = null;
 				String distortionClassLabel = "";
@@ -463,7 +444,6 @@ public class DistortImage {
 					i2 = (BufferedImage)gaussianBlurImage(i, radius);
 					distortionClassLabel = ""+radius;
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 					return;
 				}
@@ -478,13 +458,14 @@ public class DistortImage {
 					result.createGraphics().drawImage(bi, 0, 0, Color.WHITE, null);
 					ImageIO.write(result, "jpg", outputfile);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 					return;
 				}
 			}
 			
-			for(int noiseIndex = 0; noiseIndex < 1; noiseIndex++)
+			// generate noise images 
+			int totalNoiseImages = 1;
+			for(int noiseIndex = 0; noiseIndex < totalNoiseImages; noiseIndex++)
 			{
 				BufferedImage i2 = null;
 				int amount = 0;
@@ -509,7 +490,6 @@ public class DistortImage {
 					result.createGraphics().drawImage(bi, 0, 0, Color.WHITE, null);
 					ImageIO.write(result, "jpg", outputfile);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 					return;
 				}
@@ -525,7 +505,6 @@ public class DistortImage {
 				result.createGraphics().drawImage(bi, 0, 0, Color.WHITE, null);
 				ImageIO.write(result, "jpg", outputfile);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return;
 			}
@@ -534,7 +513,9 @@ public class DistortImage {
     
 	public static void main(String[] args) throws IOException
 	{
-		if(true)
+		boolean generateImages = true;
+		
+		if(generateImages)
 		{
 			// from https://towardsdatascience.com/how-to-scrape-the-imagenet-f309e02de1f4
 			// https://github.com/mf1024/ImageNet-datasets-downloader
@@ -548,7 +529,6 @@ public class DistortImage {
 			String st;
 			long download = 0, processing = 0, disk = 0, start = 0;
 	
-			
 			int lineNumber = 0;
 			
 			ExecutorService executor = Executors.newFixedThreadPool(100);
@@ -565,7 +545,6 @@ public class DistortImage {
 				
 				List<String> list = getImageURLs(synid);
 				
-				start = System.currentTimeMillis();
 				for(String s : list)
 				{
 					if(s.length()==0) continue;
@@ -580,11 +559,6 @@ public class DistortImage {
 			executor.shutdown();
 			while (!executor.isTerminated() ) {
 			}
-			long end = System.currentTimeMillis();
-			System.out.println((end-start)/1000);
-	//		System.out.println(download/1000);
-	//		System.out.println(processing/1000);
-	//		System.out.println(disk/1000);
 		}
 		else
 		{
@@ -596,8 +570,6 @@ public class DistortImage {
 			BufferedReader br = new BufferedReader(new FileReader(file)); 
 	
 			String st;
-			long download = 0, processing = 0, disk = 0, start = 0;
-	
 			
 			int lineNumber = 0;
 			
@@ -609,11 +581,9 @@ public class DistortImage {
 							
 				String[] words = st.split(",");
 				String synid = words[0];
-				String className = words[1];
 				
 				List<String> list = getImageURLs(synid);
 				
-				start = System.currentTimeMillis();
 				for(String s : list)
 				{
 					Image i = null;
