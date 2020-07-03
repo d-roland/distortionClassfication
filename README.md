@@ -31,7 +31,7 @@ Twirl:
 
 ![Image 1](sampleImages/00000007.7.organism.jpg)
 
-## Basline Model
+## Baseline Model
 We trained a softmax regression model as a baseline using `softmaxRegression/softmax.py`.
 
 ## VGG16 Scratch Model
